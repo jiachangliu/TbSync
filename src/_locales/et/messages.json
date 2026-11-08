@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Keskne kasutajaliides väliste kontode kontaktide, kalendrite ja ülesannete sünkroonimise haldamiseks teenusepakkujate lisamoodulite kaudu."
+  },
+  "manager.title": {
+    "message": "TbSync kontohaldur"
+  },
+  "manager.tab.accounts": {
+    "message": "TbSync kontod"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Kategooriahaldur"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync sünkroonib ka kontaktide kategooriaid, mis on võimas asendus mittesünkroonitavatele kontaktide loenditele. Et neid Thunderbirdi aadressiraamatus kasutada, võid paigaldada lisandi Category Manager. See võimaldab hallata kategooriapõhiseid kattuvaid kontaktirühmi ja pakub mitmeid teisi kategooriatega seotud funktsioone. Selle leiad ametlikust Mozilla lisandirepositooriumist:"
+  },
+  "manager.tab.help": {
+    "message": "Abi"
+  },
+  "manager.help.wiki": {
+    "message": "Ava TbSync projekti wiki-lehed - sealt leiad lisateavet, juhendeid ja seadistamise üksikasjalikke kirjeldusi."
+  },
+  "manager.eventLog.intro": {
+    "message": "Veaaruanded sisaldavad selle logi sisu. Kasulikuma aruande jaoks tõsta üksikasjalikkuse taset, tühjenda logi ja korda probleemi enne aruande saatmise nupul klõpsamist."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Loo veaaruanne"
+  },
+  "manager.eventLog.download": {
+    "message": "Salvesta logi"
+  },
+  "bugReport.title": {
+    "message": "Loo veaaruanne"
+  },
+  "bugReport.component": {
+    "message": "Komponent"
+  },
+  "bugReport.summary": {
+    "message": "Kokkuvõte"
+  },
+  "bugReport.description": {
+    "message": "Kirjeldus"
+  },
+  "bugReport.send": {
+    "message": "Saada"
+  },
+  "bugReport.cancel": {
+    "message": "Tühista"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Sisestage kokkuvõte."
+  },
+  "manager.tab.eventLog": {
+    "message": "Sündmuste logi"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Hallatav seadistus"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Selle seadistuse on paigaldanud sinu administraator ja see loetakse hallatavast salvestusruumist. Seda ei saa siin muuta."
+  },
+  "manager.eventLog.clear": {
+    "message": "Tühjenda"
+  },
+  "manager.eventLog.keep": {
+    "message": "Selle seansi kirjete säilitamine:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Viimased 5000 kirjet"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Kõik"
+  },
+  "manager.eventLog.empty": {
+    "message": "Sündmusi veel pole."
+  },
+  "manager.eventLog.options": {
+    "message": "Logi valikud"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Sündmuste kogumise üksikasjalikkuse tase:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Ainult vead"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Vead ja hoiatused"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Vead, hoiatused ja teabesõnumid"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Vead, hoiatused, teabesõnumid ja silumislogid"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Liigitus"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Tase"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Allikas"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Konto"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Ressurss"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Sõnum"
+  },
+  "manager.accounts.heading": {
+    "message": "Seadistatud kontod"
+  },
+  "manager.accounts.col.status": {
+    "message": "Olek"
+  },
+  "manager.providers.heading": {
+    "message": "Saadaolevad teenusepakkujad"
+  },
+  "manager.addAccount": {
+    "message": "Lisa konto"
+  },
+  "manager.noAccounts": {
+    "message": "Seadistatud kontosid pole"
+  },
+  "manager.noProviders": {
+    "message": "Teenusepakkuja lisamooduleid pole paigaldatud."
+  },
+  "manager.provider.install": {
+    "message": "Paigalda saidilt addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Paigalda beetaversioon GitHubist"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Too seadistusaken esiplaanile"
+  },
+  "provider.state.active": {
+    "message": "Valmis"
+  },
+  "provider.state.stale": {
+    "message": "Taasühendamine…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Pole paigaldatud"
+  },
+  "provider.state.incompatible": {
+    "message": "Ei ühildu TbSync v$HOST$-ga",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Sünkroonitakse…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Pole sünkroonitud"
+  },
+  "account.status.disabled": {
+    "message": "Ühendamata"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Teenusepakkuja pole saadaval"
+  },
+  "account.status.needs-reauth": {
+    "message": "Autentimine ebaõnnestus"
+  },
+  "account.status.error": {
+    "message": "Viga"
+  },
+  "account.status.warning": {
+    "message": "Hoiatus"
+  },
+  "account.status.busy": {
+    "message": "Töötlemine…"
+  },
+  "account.status.aborted": {
+    "message": "Sünkroonimine katkestatud"
+  },
+  "folder.status.pending": {
+    "message": "Ootab sünkroonimist"
+  },
+  "folder.status.modified": {
+    "message": "Kohalikud muudatused"
+  },
+  "error.E:AUTH": {
+    "message": "Autentimine ebaõnnestus"
+  },
+  "syncstate.sync": {
+    "message": "Sünkroonitakse…"
+  },
+  "syncstate.prepare": {
+    "message": "Ettevalmistus…"
+  },
+  "syncstate.send": {
+    "message": "Päringu saatmine…"
+  },
+  "syncstate.eval": {
+    "message": "Vastuse töötlemine…"
+  },
+  "manager.detail.general": {
+    "message": "Üldine"
+  },
+  "manager.detail.status": {
+    "message": "Olek"
+  },
+  "manager.detail.provider": {
+    "message": "Teenusepakkuja:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Viimane sünkroonimine:"
+  },
+  "manager.resources.heading": {
+    "message": "Saadaolevad ressursid"
+  },
+  "manager.resources.description": {
+    "message": "Vali, milliseid leitud ressursse Thunderbirdiga sünkroonida."
+  },
+  "manager.account.connect": {
+    "message": "Ühenda"
+  },
+  "manager.account.disconnect": {
+    "message": "Katkesta ühendus"
+  },
+  "manager.account.migrate": {
+    "message": "Migreeri…"
+  },
+  "manager.account.authenticate": {
+    "message": "Autendi"
+  },
+  "manager.account.settings": {
+    "message": "Sätted"
+  },
+  "manager.account.services": {
+    "message": "Teenused"
+  },
+  "manager.account.remove": {
+    "message": "Eemalda"
+  },
+  "manager.account.sync": {
+    "message": "Sünkrooni kohe"
+  },
+  "manager.account.autosync": {
+    "message": "Automaatne sünkroonimine iga"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "min"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 keelab selle konto automaatse sünkroonimise."
+  },
+  "manager.error.title": {
+    "message": "Viga"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Eemalda konto"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Kas eemaldada konto „$NAME$“? Kustutatakse ka kõik selle konto kohalikud ressursid.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Tühista"
+  },
+  "manager.resources.empty": {
+    "message": "Ressursse veel pole."
+  },
+  "manager.resources.col.name": {
+    "message": "Nimi"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Read-only server access (server-enforced)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Read from and write to server"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Read-only server access (revert local changes)"
+  },
+  "folderType.contacts": {
+    "message": "Kontaktid"
+  },
+  "folderType.calendars": {
+    "message": "Kalender"
+  },
+  "folderType.tasks": {
+    "message": "Ülesanded"
+  },
+  "account.status.needs-sync": {
+    "message": "Kontot tuleb sünkroonida, vähemalt üks element ei ole sünkroonis"
+  },
+  "account.status.upgrading": {
+    "message": "Pakkuja teeb sellele kontole ühekordset tööd…"
+  },
+  "account.status.setting-up": {
+    "message": "Kontot valmistatakse ette…"
+  },
+  "account.status.maintaining": {
+    "message": "Teenusepakkuja kontrollib selle konto andmeid…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Seadistatud vanema versiooniga - sünkroonimiseks ühendage uuesti"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Seadistatud vanema versiooniga - vajab migreerimist"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Sünkroonimine…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Sünkroonimisviga"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Sünkroonimise hoiatus"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Kohalikud muudatused ootel"
+  },
+  "actionMenu.syncNow": {
+    "message": "Sünkroni nüüd"
+  },
+  "options.intro": {
+    "message": "TbSynci kontoseaded asuvad TbSynci halduris. Selle avamiseks klõpsa allolevat nuppu."
+  },
+  "options.openManager": {
+    "message": "Ava TbSynci haldur"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Näita sündmuste logi"
+  },
+  "error.E:NETWORK": {
+    "message": "Serveriga ei õnnestunud ühendust luua"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Toiming aegus"
+  },
+  "error.E:CANCELLED": {
+    "message": "Toiming tühistatud"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Pakkuja laiendus pole saadaval"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Pakkuja protokolli versioon ei sobi"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Tundmatu konto"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Tundmatu kaust"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Toetamata käsk"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Sisemine viga, vaadake sündmuste logi"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Ühendus pakkujaga katkestatud"
+  },
+  "error.E:QUOTA": {
+    "message": "Salvestuskvoot ületatud"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Sünkroonimine ebaõnnestus ühe või mitme kausta puhul"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Kontot ei õnnestunud sünkroonida"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Server keeldus päringust ega võta ka kordusküsimust vastu"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Sünkroonimise olek"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Orb] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Külasta selle teenusepakkuja annetuskampaaniat",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Annetuskampaania",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "See konto seadistati vanema versiooniga ega saa sünkroonida. Katkesta ühendus ja ühenda uuesti, et see serverist üles ehitada."
+  },
+  "manager.account.migrated.held": {
+    "message": "See konto seadistati vanema versiooniga ega saa sünkroonida. Päästetud on $COUNT$ ainult kohalikku muudatust - konto tuleb enne edasist kasutamist migreerida.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Server palus automaatse sünkroonimise peatada kuni $TIME$. Käsitsi sünkroonimine töötab igal ajal.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Konto migreerimine"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ muudatust kontol „$ACCOUNT$“ ei ole kunagi serveriga sünkroonitud ja on päästetud.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Migreerimine ehitab serverist üles kõik selle konto kalendrid ja aadressiraamatud ning pakub seejärel päästetud muudatused, et saaksid valida, millised taastada."
+  },
+  "migration.button.download": {
+    "message": "Varunda ainult kohalikud muudatused"
+  },
+  "migration.button.start": {
+    "message": "Alusta migreerimist"
+  },
+  "migration.button.apply": {
+    "message": "Lõpeta konto migreerimine"
+  },
+  "migration.button.close": {
+    "message": "Sulge"
+  },
+  "migration.column.item": {
+    "message": "Element"
+  },
+  "migration.column.action": {
+    "message": "Toiming"
+  },
+  "migration.column.type": {
+    "message": "Tüüp"
+  },
+  "migration.type.contact": {
+    "message": "Kontakt"
+  },
+  "migration.type.event": {
+    "message": "Sündmus"
+  },
+  "migration.type.task": {
+    "message": "Ülesanne"
+  },
+  "migration.type.list": {
+    "message": "Postiloend"
+  },
+  "migration.running.lead": {
+    "message": "Kontot ehitatakse serverist uuesti üles."
+  },
+  "migration.running.replacing": {
+    "message": "$FOLDER$ asendamine…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "$FOLDER$ allalaadimine…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Lisa"
+  },
+  "migration.op.modified": {
+    "message": "Uuenda"
+  },
+  "migration.op.deleted": {
+    "message": "Kustuta"
+  },
+  "migration.op.gone": {
+    "message": "serveris enam pole"
+  },
+  "migration.item.unnamed": {
+    "message": "(nimetu)"
+  },
+  "migration.detail.empty": {
+    "message": "Pole midagi näidata."
+  },
+  "migration.replay.lead": {
+    "message": "Ressursid on serverist uuesti üles ehitatud. Valige, millised päästetud kohalikud muudatused taastada:"
+  },
+  "migration.replay.none": {
+    "message": "Ressursid on serverist uuesti üles ehitatud. Taastamiseks pole päästetud kohalikke muudatusi."
+  },
+  "migration.done": {
+    "message": "$COUNT$ muudatust taastati ja need ootavad sünkroonimist. Kontot saab kasutada.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

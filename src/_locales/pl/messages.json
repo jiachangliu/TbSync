@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Centralny interfejs użytkownika do zarządzania synchronizacją kontaktów, kalendarzy i zadań z kontami zewnętrznymi za pośrednictwem dodatków-dostawców."
+  },
+  "manager.title": {
+    "message": "Menedżer kont TbSync"
+  },
+  "manager.tab.accounts": {
+    "message": "Konta TbSync"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Menedżer kategorii"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync synchronizuje również kategorie kontaktów, które są mocnym zamiennikiem niesynchronizowalnych list kontaktów. Aby z nich korzystać w książce adresowej Thunderbirda, można zainstalować dodatek Category Manager. Pozwala on zarządzać nakładającymi się grupami kontaktów opartymi na kategoriach i oferuje wiele innych funkcji związanych z kategoriami. Można go znaleźć w oficjalnym repozytorium dodatków Mozilli:"
+  },
+  "manager.tab.help": {
+    "message": "Pomoc"
+  },
+  "manager.help.wiki": {
+    "message": "Otwórz strony wiki projektu TbSync - znajdziesz tam dodatkowe informacje, przewodniki i szczegółowe opisy konfiguracji."
+  },
+  "manager.eventLog.intro": {
+    "message": "Zgłoszenia błędów zawierają zawartość tego dziennika. Aby zgłoszenie było bardziej użyteczne, podnieś poziom szczegółowości, wyczyść dziennik i odtwórz problem przed kliknięciem przycisku zgłoszenia."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Utwórz zgłoszenie błędu"
+  },
+  "manager.eventLog.download": {
+    "message": "Zapisz dziennik"
+  },
+  "bugReport.title": {
+    "message": "Utwórz zgłoszenie błędu"
+  },
+  "bugReport.component": {
+    "message": "Komponent"
+  },
+  "bugReport.summary": {
+    "message": "Podsumowanie"
+  },
+  "bugReport.description": {
+    "message": "Opis"
+  },
+  "bugReport.send": {
+    "message": "Wyślij"
+  },
+  "bugReport.cancel": {
+    "message": "Anuluj"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Wprowadź podsumowanie."
+  },
+  "manager.tab.eventLog": {
+    "message": "Dziennik zdarzeń"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Konfiguracja zarządzana"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Ta konfiguracja została wdrożona przez administratora i jest odczytywana z zarządzanego magazynu. Nie można jej tutaj zmienić."
+  },
+  "manager.eventLog.clear": {
+    "message": "Wyczyść"
+  },
+  "manager.eventLog.keep": {
+    "message": "Zachowaj wpisy z tej sesji:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Ostatnie 5000 wpisów"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Wszystko"
+  },
+  "manager.eventLog.empty": {
+    "message": "Jeszcze brak zdarzeń."
+  },
+  "manager.eventLog.options": {
+    "message": "Opcje dziennika"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Poziom szczegółowości zbierania zdarzeń:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Tylko błędy"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Błędy i ostrzeżenia"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Błędy, ostrzeżenia i komunikaty informacyjne"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Błędy, ostrzeżenia, komunikaty informacyjne i dzienniki debugowania"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Klasyfikacja"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Poziom"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Źródło"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Konto"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Zasób"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Komunikat"
+  },
+  "manager.accounts.heading": {
+    "message": "Skonfigurowane konta"
+  },
+  "manager.accounts.col.status": {
+    "message": "Stan"
+  },
+  "manager.providers.heading": {
+    "message": "Dostępni dostawcy"
+  },
+  "manager.addAccount": {
+    "message": "Dodaj konto"
+  },
+  "manager.noAccounts": {
+    "message": "Brak skonfigurowanych kont"
+  },
+  "manager.noProviders": {
+    "message": "Nie zainstalowano żadnych dodatków-dostawców."
+  },
+  "manager.provider.install": {
+    "message": "Zainstaluj z addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Zainstaluj wersję beta z GitHuba"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Przenieś okno konfiguracji na pierwszy plan"
+  },
+  "provider.state.active": {
+    "message": "Gotowy"
+  },
+  "provider.state.stale": {
+    "message": "Ponowne łączenie…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Niezainstalowany"
+  },
+  "provider.state.incompatible": {
+    "message": "Niezgodny z TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Synchronizowanie…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Niezsynchronizowane"
+  },
+  "account.status.disabled": {
+    "message": "Rozłączone"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Dostawca niedostępny"
+  },
+  "account.status.needs-reauth": {
+    "message": "Uwierzytelnianie nie powiodło się"
+  },
+  "account.status.error": {
+    "message": "Błąd"
+  },
+  "account.status.warning": {
+    "message": "Ostrzeżenie"
+  },
+  "account.status.busy": {
+    "message": "Przetwarzanie…"
+  },
+  "account.status.aborted": {
+    "message": "Synchronizacja przerwana"
+  },
+  "folder.status.pending": {
+    "message": "Oczekiwanie na synchronizację"
+  },
+  "folder.status.modified": {
+    "message": "Zmiany lokalne"
+  },
+  "error.E:AUTH": {
+    "message": "Uwierzytelnianie nie powiodło się"
+  },
+  "syncstate.sync": {
+    "message": "Synchronizowanie…"
+  },
+  "syncstate.prepare": {
+    "message": "Przygotowywanie…"
+  },
+  "syncstate.send": {
+    "message": "Wysyłanie żądania…"
+  },
+  "syncstate.eval": {
+    "message": "Przetwarzanie odpowiedzi…"
+  },
+  "manager.detail.general": {
+    "message": "Ogólne"
+  },
+  "manager.detail.status": {
+    "message": "Stan"
+  },
+  "manager.detail.provider": {
+    "message": "Dostawca:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Ostatnia synchronizacja:"
+  },
+  "manager.resources.heading": {
+    "message": "Dostępne zasoby"
+  },
+  "manager.resources.description": {
+    "message": "Wybierz, które ze znalezionych zasobów mają być synchronizowane z Thunderbirdem."
+  },
+  "manager.account.connect": {
+    "message": "Połącz"
+  },
+  "manager.account.disconnect": {
+    "message": "Rozłącz"
+  },
+  "manager.account.migrate": {
+    "message": "Migruj…"
+  },
+  "manager.account.authenticate": {
+    "message": "Uwierzytelnij"
+  },
+  "manager.account.settings": {
+    "message": "Ustawienia"
+  },
+  "manager.account.services": {
+    "message": "Usługi"
+  },
+  "manager.account.remove": {
+    "message": "Usuń"
+  },
+  "manager.account.sync": {
+    "message": "Synchronizuj teraz"
+  },
+  "manager.account.autosync": {
+    "message": "Automatyczna synchronizacja co"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "min"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 wyłącza automatyczną synchronizację dla tego konta."
+  },
+  "manager.error.title": {
+    "message": "Błąd"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Usuń konto"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Usunąć konto „$NAME$”? Wszystkie lokalne zasoby tego konta zostaną również usunięte.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Anuluj"
+  },
+  "manager.resources.empty": {
+    "message": "Jeszcze brak zasobów."
+  },
+  "manager.resources.col.name": {
+    "message": "Nazwa"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Dostęp do serwera tylko do odczytu (wymuszony przez serwer)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Odczytuj i zapisuj na serwer"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Dostęp do serwera tylko do odczytu (cofnij zmiany lokalne)"
+  },
+  "folderType.contacts": {
+    "message": "Kontakty"
+  },
+  "folderType.calendars": {
+    "message": "Kalendarz"
+  },
+  "folderType.tasks": {
+    "message": "Zadania"
+  },
+  "account.status.needs-sync": {
+    "message": "Konto wymaga synchronizacji, co najmniej jeden element nie jest zsynchronizowany"
+  },
+  "account.status.upgrading": {
+    "message": "Dostawca wykonuje jednorazową operację dla tego konta…"
+  },
+  "account.status.setting-up": {
+    "message": "Przygotowywanie konta…"
+  },
+  "account.status.maintaining": {
+    "message": "Dostawca sprawdza dane tego konta…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Skonfigurowane przez starszą wersję - połącz ponownie, aby synchronizować"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Skonfigurowane przez starszą wersję - wymaga migracji"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Synchronizacja…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Błąd synchronizacji"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Ostrzeżenie synchronizacji"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Oczekujące zmiany lokalne"
+  },
+  "actionMenu.syncNow": {
+    "message": "Synchronizuj teraz"
+  },
+  "options.intro": {
+    "message": "Ustawienia kont TbSync znajdują się w Menedżerze TbSync. Kliknij poniższy przycisk, aby go otworzyć."
+  },
+  "options.openManager": {
+    "message": "Otwórz Menedżer TbSync"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Pokaż dziennik zdarzeń"
+  },
+  "error.E:NETWORK": {
+    "message": "Nie można połączyć się z serwerem"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Przekroczono czas operacji"
+  },
+  "error.E:CANCELLED": {
+    "message": "Operacja anulowana"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Rozszerzenie dostawcy jest niedostępne"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Niezgodna wersja protokołu dostawcy"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Nieznane konto"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Nieznany folder"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Nieobsługiwane polecenie"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Błąd wewnętrzny, zobacz dziennik zdarzeń"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Rozłączono z dostawcą"
+  },
+  "error.E:QUOTA": {
+    "message": "Przekroczono limit miejsca"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Synchronizacja nie powiodła się dla jednego lub więcej folderów"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Nie udało się zsynchronizować konta"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Serwer odrzucił żądanie i nie przyjmie ponownej próby"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Stan synchronizacji"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Osierocone] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Odwiedź zbiórkę na rzecz tego dostawcy",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Zbiórka",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "To konto zostało skonfigurowane przez starszą wersję i nie może się synchronizować. Rozłącz je i połącz ponownie, aby odbudować je z serwera."
+  },
+  "manager.account.migrated.held": {
+    "message": "To konto zostało skonfigurowane przez starszą wersję i nie może się synchronizować. Uratowano $COUNT$ zmian tylko lokalnych - konto musi zostać zmigrowane, zanim będzie można go ponownie użyć.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Serwer poprosił o wstrzymanie automatycznej synchronizacji do $TIME$. Ręczna synchronizacja działa w każdej chwili.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Migruj konto"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ zmian na koncie „$ACCOUNT$” nigdy nie zostało zsynchronizowanych z serwerem i zostało uratowanych.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Migracja odbudowuje z serwera wszystkie kalendarze i książki adresowe tego konta, a następnie proponuje uratowane zmiany, abyś mógł wybrać, które przywrócić."
+  },
+  "migration.button.download": {
+    "message": "Utwórz kopię zmian tylko lokalnych"
+  },
+  "migration.button.start": {
+    "message": "Rozpocznij migrację"
+  },
+  "migration.button.apply": {
+    "message": "Zakończ migrację konta"
+  },
+  "migration.button.close": {
+    "message": "Zamknij"
+  },
+  "migration.column.item": {
+    "message": "Element"
+  },
+  "migration.column.action": {
+    "message": "Działanie"
+  },
+  "migration.column.type": {
+    "message": "Typ"
+  },
+  "migration.type.contact": {
+    "message": "Kontakt"
+  },
+  "migration.type.event": {
+    "message": "Wydarzenie"
+  },
+  "migration.type.task": {
+    "message": "Zadanie"
+  },
+  "migration.type.list": {
+    "message": "Lista dystrybucyjna"
+  },
+  "migration.running.lead": {
+    "message": "Odbudowywanie konta z serwera."
+  },
+  "migration.running.replacing": {
+    "message": "Zastępowanie $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Pobieranie $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Dodaj"
+  },
+  "migration.op.modified": {
+    "message": "Zaktualizuj"
+  },
+  "migration.op.deleted": {
+    "message": "Usuń"
+  },
+  "migration.op.gone": {
+    "message": "nie ma już na serwerze"
+  },
+  "migration.item.unnamed": {
+    "message": "(bez nazwy)"
+  },
+  "migration.detail.empty": {
+    "message": "Nie ma nic do pokazania."
+  },
+  "migration.replay.lead": {
+    "message": "Zasoby zostały odbudowane z serwera. Wybierz, które z uratowanych zmian lokalnych mają zostać przywrócone:"
+  },
+  "migration.replay.none": {
+    "message": "Zasoby zostały odbudowane z serwera. Nie ma uratowanych zmian lokalnych do przywrócenia."
+  },
+  "migration.done": {
+    "message": "Przywrócono $COUNT$ zmian, które oczekują na synchronizację. Konta można używać.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

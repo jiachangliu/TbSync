@@ -1,0 +1,92 @@
+{
+  "manager.tab.bridge": {
+    "message": "Brücke"
+  },
+  "manager.bridge.intro": {
+    "message": "Die Brücke erlaubt einem lokalen Skript, TbSync über einen lokalen HTTP-Socket zu steuern, für automatisierte Tests. Sie ist deaktiviert, bis Sie sie hier einschalten, und endet mit Thunderbird. Diese Funktion gibt es nur in der GitHub-Beta-Version. Sie ist nicht Teil der auf addons.thunderbird.net veröffentlichten Version."
+  },
+  "manager.bridge.status.on": {
+    "message": "Brücke läuft"
+  },
+  "manager.bridge.status.off": {
+    "message": "Brücke gestoppt"
+  },
+  "manager.bridge.enable": {
+    "message": "Aktivieren"
+  },
+  "manager.bridge.disable": {
+    "message": "Deaktivieren"
+  },
+  "manager.bridge.download": {
+    "message": "Hilfsprogramm herunterladen"
+  },
+  "manager.bridge.downloadHint": {
+    "message": "Um die Brücke einschalten zu können, installieren Sie zuerst ihr kleines Hilfsprogramm: herunterladen, das enthaltene Installationsskript ausführen und Thunderbird neu starten."
+  },
+  "manager.bridge.target": {
+    "message": "Zugelassenes Ziel"
+  },
+  "manager.bridge.activity": {
+    "message": "Letzte Befehle"
+  },
+  "manager.bridge.activity.empty": {
+    "message": "Noch keine Befehle."
+  },
+  "manager.bridge.target.account": {
+    "message": "Konto"
+  },
+  "manager.bridge.target.contacts": {
+    "message": "Kontakte"
+  },
+  "manager.bridge.target.events": {
+    "message": "Termine"
+  },
+  "manager.bridge.target.tasks": {
+    "message": "Aufgaben"
+  },
+  "manager.bridge.target.none": {
+    "message": "(keine)"
+  },
+  "manager.bridge.download.failed": {
+    "message": "Herunterladen fehlgeschlagen: $1"
+  },
+  "manager.bridge.uninstall": {
+    "message": "Deinstallation des Hilfsprogramms herunterladen"
+  },
+  "manager.bridge.endpoint": {
+    "message": "Empfängt auf $1"
+  },
+  "manager.bridge.example": {
+    "message": "In einer Shell ausprobieren:"
+  },
+  "manager.bridge.allowed": {
+    "message": "Zulässige Befehle: $1"
+  },
+  "manager.bridge.target.none.hint": {
+    "message": "Wählen Sie ein Konto und eine Ressource aus: ohne sie verweigert die Brücke jeden Befehl, der etwas ändert oder Kalenderdaten liest."
+  },
+  "manager.bridge.stale": {
+    "message": "Das installierte Hilfsprogramm ist veraltet. Laden Sie es erneut herunter, führen Sie das Installationsskript noch einmal aus und schalten Sie die Brücke aus und wieder ein."
+  },
+  "manager.bridge.status.starting": {
+    "message": "Bridge startet…"
+  },
+  "manager.bridge.status.failed": {
+    "message": "Bridge fehlgeschlagen"
+  },
+  "manager.bridge.status.degraded": {
+    "message": "Bridge beeinträchtigt"
+  },
+  "manager.bridge.detail.failed": {
+    "message": "Das Hilfsprogramm konnte wiederholt nicht gestartet werden. Zum erneuten Versuch deaktivieren und wieder aktivieren, oder das Hilfsprogramm neu installieren."
+  },
+  "manager.bridge.detail.socketDead": {
+    "message": "Die Verbindung zu TbSync steht, aber der HTTP-Socket des Hilfsprogramms antwortet nicht."
+  },
+  "manager.bridge.detail.linkDead": {
+    "message": "Das Hilfsprogramm antwortet, aber seine Verbindung zu TbSync ist unterbrochen - Anfragen bleiben hängen."
+  },
+  "manager.bridge.unrestricted": {
+    "message": "VOLLZUGRIFF: Skripte können sich selbst jedes Konto freischalten und auf alle verfügbaren Ressourcen zugreifen - einschließlich Konten verbinden und noch nicht synchronisierte Ressourcen aktivieren. Die Freigabe unten ist dann keine Grenze mehr, nur noch der aktuelle Zustand. Nach Gebrauch wieder ausschalten."
+  }
+}

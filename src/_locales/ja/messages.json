@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "プロバイダーアドオンを介して、外部アカウントとの連絡先・カレンダー・タスクの同期を一元管理するユーザーインターフェースです。"
+  },
+  "manager.title": {
+    "message": "TbSync アカウントマネージャー"
+  },
+  "manager.tab.accounts": {
+    "message": "TbSync アカウント"
+  },
+  "manager.tab.categoryManager": {
+    "message": "カテゴリーマネージャー"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync は連絡先のカテゴリーも同期します。同期できない連絡先リストの強力な代替手段です。Thunderbird のアドレス帳で利用するには、Category Manager アドオンをインストールしてください。重複するカテゴリーベースの連絡先グループの管理など、カテゴリー関連の多くの機能を提供します。Mozilla のアドオンリポジトリで入手できます:"
+  },
+  "manager.tab.help": {
+    "message": "ヘルプ"
+  },
+  "manager.help.wiki": {
+    "message": "TbSync プロジェクトの Wiki ページを開きます。追加情報、ガイド、詳細な設定説明が掲載されています。"
+  },
+  "manager.eventLog.intro": {
+    "message": "バグレポートにはこのログの内容が含まれます。より有用なレポートにするには、詳細レベルを上げ、ログをクリアし、問題を再現してから「バグレポートを作成」ボタンをクリックしてください。"
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "バグレポートを作成"
+  },
+  "manager.eventLog.download": {
+    "message": "ログを保存"
+  },
+  "bugReport.title": {
+    "message": "バグレポートを作成"
+  },
+  "bugReport.component": {
+    "message": "コンポーネント"
+  },
+  "bugReport.summary": {
+    "message": "概要"
+  },
+  "bugReport.description": {
+    "message": "詳細"
+  },
+  "bugReport.send": {
+    "message": "送信"
+  },
+  "bugReport.cancel": {
+    "message": "キャンセル"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "概要を入力してください。"
+  },
+  "manager.tab.eventLog": {
+    "message": "イベントログ"
+  },
+  "manager.tab.managedConfig": {
+    "message": "管理された設定"
+  },
+  "manager.managedConfig.intro": {
+    "message": "この設定は管理者によって配布され、管理されたストレージから読み込まれます。ここでは変更できません。"
+  },
+  "manager.eventLog.clear": {
+    "message": "クリア"
+  },
+  "manager.eventLog.keep": {
+    "message": "このセッションのエントリの保持:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "最新の 5000 件"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "すべて"
+  },
+  "manager.eventLog.empty": {
+    "message": "イベントはまだありません。"
+  },
+  "manager.eventLog.options": {
+    "message": "ログオプション"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "イベント収集の詳細レベル:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "エラーのみ"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "エラーと警告"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "エラー、警告、情報メッセージ"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "エラー、警告、情報メッセージ、デバッグログ"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "分類"
+  },
+  "manager.eventLog.field.level": {
+    "message": "レベル"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "ソース"
+  },
+  "manager.eventLog.field.account": {
+    "message": "アカウント"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "リソース"
+  },
+  "manager.eventLog.col.message": {
+    "message": "メッセージ"
+  },
+  "manager.accounts.heading": {
+    "message": "設定済みのアカウント"
+  },
+  "manager.accounts.col.status": {
+    "message": "状態"
+  },
+  "manager.providers.heading": {
+    "message": "利用可能なプロバイダー"
+  },
+  "manager.addAccount": {
+    "message": "アカウントを追加"
+  },
+  "manager.noAccounts": {
+    "message": "設定されたアカウントはありません"
+  },
+  "manager.noProviders": {
+    "message": "プロバイダーアドオンがインストールされていません。"
+  },
+  "manager.provider.install": {
+    "message": "addons.thunderbird.net からインストール"
+  },
+  "manager.provider.installBeta": {
+    "message": "GitHub からベータ版をインストール"
+  },
+  "manager.provider.focusSetup": {
+    "message": "設定ウィンドウを前面に表示"
+  },
+  "provider.state.active": {
+    "message": "準備完了"
+  },
+  "provider.state.stale": {
+    "message": "再接続中…"
+  },
+  "provider.state.uninstalled": {
+    "message": "未インストール"
+  },
+  "provider.state.incompatible": {
+    "message": "TbSync v$HOST$ と互換性がありません",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "同期中…"
+  },
+  "account.status.notsyncronized": {
+    "message": "未同期"
+  },
+  "account.status.disabled": {
+    "message": "切断"
+  },
+  "account.status.provider-unavailable": {
+    "message": "プロバイダーは利用できません"
+  },
+  "account.status.needs-reauth": {
+    "message": "認証に失敗しました"
+  },
+  "account.status.error": {
+    "message": "エラー"
+  },
+  "account.status.warning": {
+    "message": "警告"
+  },
+  "account.status.busy": {
+    "message": "処理中…"
+  },
+  "account.status.aborted": {
+    "message": "同期は中止されました"
+  },
+  "folder.status.pending": {
+    "message": "同期を待機中"
+  },
+  "folder.status.modified": {
+    "message": "ローカルの変更あり"
+  },
+  "error.E:AUTH": {
+    "message": "認証に失敗しました"
+  },
+  "syncstate.sync": {
+    "message": "同期中…"
+  },
+  "syncstate.prepare": {
+    "message": "準備中…"
+  },
+  "syncstate.send": {
+    "message": "リクエストを送信中…"
+  },
+  "syncstate.eval": {
+    "message": "応答を処理中…"
+  },
+  "manager.detail.general": {
+    "message": "全般"
+  },
+  "manager.detail.status": {
+    "message": "状態"
+  },
+  "manager.detail.provider": {
+    "message": "プロバイダー:"
+  },
+  "manager.detail.lastSync": {
+    "message": "最後の同期:"
+  },
+  "manager.resources.heading": {
+    "message": "利用可能なリソース"
+  },
+  "manager.resources.description": {
+    "message": "見つかったリソースのうち、Thunderbird と同期するものを選択してください。"
+  },
+  "manager.account.connect": {
+    "message": "接続"
+  },
+  "manager.account.disconnect": {
+    "message": "切断"
+  },
+  "manager.account.migrate": {
+    "message": "移行…"
+  },
+  "manager.account.authenticate": {
+    "message": "認証"
+  },
+  "manager.account.settings": {
+    "message": "設定"
+  },
+  "manager.account.services": {
+    "message": "サービス"
+  },
+  "manager.account.remove": {
+    "message": "削除"
+  },
+  "manager.account.sync": {
+    "message": "今すぐ同期"
+  },
+  "manager.account.autosync": {
+    "message": "自動同期の間隔"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "分"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 に設定すると、このアカウントの自動同期は無効になります。"
+  },
+  "manager.error.title": {
+    "message": "エラー"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "アカウントの削除"
+  },
+  "manager.remove.confirmBody": {
+    "message": "アカウント「$NAME$」を削除しますか?このアカウントのすべてのローカルリソースも削除されます。",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "キャンセル"
+  },
+  "manager.resources.empty": {
+    "message": "リソースはまだありません。"
+  },
+  "manager.resources.col.name": {
+    "message": "名前"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Read-only server access (server-enforced)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Read from and write to server"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Read-only server access (revert local changes)"
+  },
+  "folderType.contacts": {
+    "message": "連絡先"
+  },
+  "folderType.calendars": {
+    "message": "カレンダー"
+  },
+  "folderType.tasks": {
+    "message": "タスク"
+  },
+  "account.status.needs-sync": {
+    "message": "アカウントの同期が必要です。少なくとも 1 つの項目が同期されていません"
+  },
+  "account.status.upgrading": {
+    "message": "プロバイダーがこのアカウントで一度限りの作業を実行しています…"
+  },
+  "account.status.setting-up": {
+    "message": "アカウントを準備しています…"
+  },
+  "account.status.maintaining": {
+    "message": "プロバイダーがこのアカウントのデータを確認しています…"
+  },
+  "account.status.legacy-locked": {
+    "message": "以前のバージョンで設定されました - 同期するには再接続してください"
+  },
+  "account.status.legacy-migrate": {
+    "message": "以前のバージョンで設定されました - 移行が必要です"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - 同期中…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - 同期エラー"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - 同期の警告"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - ローカルの変更が保留中"
+  },
+  "actionMenu.syncNow": {
+    "message": "今すぐ同期"
+  },
+  "options.intro": {
+    "message": "TbSync のアカウント設定は TbSync マネージャーにあります。下のボタンをクリックして開いてください。"
+  },
+  "options.openManager": {
+    "message": "TbSync マネージャーを開く"
+  },
+  "manager.menu.showEventLog": {
+    "message": "イベントログを表示"
+  },
+  "error.E:NETWORK": {
+    "message": "サーバーに接続できませんでした"
+  },
+  "error.E:TIMEOUT": {
+    "message": "操作がタイムアウトしました"
+  },
+  "error.E:CANCELLED": {
+    "message": "操作はキャンセルされました"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "プロバイダー拡張機能が利用できません"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "プロバイダーのプロトコルバージョンが一致しません"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "不明なアカウント"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "不明なフォルダー"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "サポートされていないコマンド"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "内部エラーです。イベントログを参照してください"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "プロバイダーから切断されました"
+  },
+  "error.E:QUOTA": {
+    "message": "ストレージのクォータを超過しました"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "1 つ以上のフォルダーで同期に失敗しました"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "アカウントを同期できませんでした"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "サーバーが要求を拒否しました。再試行しても受け付けられません"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "同期ステータス"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[孤立] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "このプロバイダーの資金調達キャンペーンを見る",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "資金調達中",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "このアカウントは以前のバージョンで設定されたため同期できません。接続を解除して再接続すると、サーバーから再構築されます。"
+  },
+  "manager.account.migrated.held": {
+    "message": "このアカウントは以前のバージョンで設定されたため同期できません。ローカルにしかない変更 $COUNT$ 件を保存しました。再び使用するには移行が必要です。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "サーバーから $TIME$ まで自動同期を停止するよう要求されました。手動同期はいつでも実行できます。",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "アカウントの移行"
+  },
+  "migration.intro.lead": {
+    "message": "「$ACCOUNT$」への変更 $COUNT$ 件はサーバーと同期されないまま保存されています。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "移行では、このアカウントのすべてのカレンダーとアドレス帳をサーバーから作り直したうえで、保存された変更を提示します。どれを復元するかを選べます。"
+  },
+  "migration.button.download": {
+    "message": "ローカルにしかない変更をバックアップ"
+  },
+  "migration.button.start": {
+    "message": "移行を開始"
+  },
+  "migration.button.apply": {
+    "message": "アカウントの移行を完了"
+  },
+  "migration.button.close": {
+    "message": "閉じる"
+  },
+  "migration.column.item": {
+    "message": "項目"
+  },
+  "migration.column.action": {
+    "message": "操作"
+  },
+  "migration.column.type": {
+    "message": "種類"
+  },
+  "migration.type.contact": {
+    "message": "連絡先"
+  },
+  "migration.type.event": {
+    "message": "予定"
+  },
+  "migration.type.task": {
+    "message": "ToDo"
+  },
+  "migration.type.list": {
+    "message": "メーリングリスト"
+  },
+  "migration.running.lead": {
+    "message": "アカウントをサーバーから作り直しています。"
+  },
+  "migration.running.replacing": {
+    "message": "$FOLDER$ を置き換えています…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "$FOLDER$ をダウンロードしています…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "追加"
+  },
+  "migration.op.modified": {
+    "message": "更新"
+  },
+  "migration.op.deleted": {
+    "message": "削除"
+  },
+  "migration.op.gone": {
+    "message": "サーバーにはもうありません"
+  },
+  "migration.item.unnamed": {
+    "message": "(名前なし)"
+  },
+  "migration.detail.empty": {
+    "message": "表示するものはありません。"
+  },
+  "migration.replay.lead": {
+    "message": "リソースをサーバーから作り直しました。復元するローカル変更を選んでください:"
+  },
+  "migration.replay.none": {
+    "message": "リソースをサーバーから作り直しました。復元するローカル変更はありません。"
+  },
+  "migration.done": {
+    "message": "$COUNT$ 件の変更を復元しました。同期を待機中です。アカウントは使用できます。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

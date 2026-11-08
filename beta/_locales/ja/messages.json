@@ -1,0 +1,92 @@
+{
+  "manager.tab.bridge": {
+    "message": "ブリッジ"
+  },
+  "manager.bridge.intro": {
+    "message": "ブリッジを使うと、ローカルのスクリプトがループバックの HTTP ソケット経由で TbSync を操作できます。自動テスト用の機能です。ここで有効にするまで動作せず、Thunderbird の終了とともに停止します。この機能は GitHub のベータ版にのみ存在し、addons.thunderbird.net で公開されているリリース版には含まれません。"
+  },
+  "manager.bridge.status.on": {
+    "message": "ブリッジは動作中です"
+  },
+  "manager.bridge.status.off": {
+    "message": "ブリッジは停止しています"
+  },
+  "manager.bridge.enable": {
+    "message": "有効にする"
+  },
+  "manager.bridge.disable": {
+    "message": "無効にする"
+  },
+  "manager.bridge.download": {
+    "message": "ヘルパーアプリをダウンロード"
+  },
+  "manager.bridge.downloadHint": {
+    "message": "ブリッジを有効にするには、まず小さなヘルパーアプリをインストールしてください。ダウンロードし、同梱のインストールスクリプトを実行してから Thunderbird を再起動します。"
+  },
+  "manager.bridge.target": {
+    "message": "許可する対象"
+  },
+  "manager.bridge.activity": {
+    "message": "最近のコマンド"
+  },
+  "manager.bridge.activity.empty": {
+    "message": "まだコマンドはありません。"
+  },
+  "manager.bridge.target.account": {
+    "message": "アカウント"
+  },
+  "manager.bridge.target.contacts": {
+    "message": "連絡先"
+  },
+  "manager.bridge.target.events": {
+    "message": "予定"
+  },
+  "manager.bridge.target.tasks": {
+    "message": "タスク"
+  },
+  "manager.bridge.target.none": {
+    "message": "(なし)"
+  },
+  "manager.bridge.download.failed": {
+    "message": "ダウンロードに失敗しました: $1"
+  },
+  "manager.bridge.uninstall": {
+    "message": "ヘルパーアプリのアンインストーラーをダウンロード"
+  },
+  "manager.bridge.endpoint": {
+    "message": "$1 で待ち受け中"
+  },
+  "manager.bridge.example": {
+    "message": "シェルから試す:"
+  },
+  "manager.bridge.allowed": {
+    "message": "受け付けるコマンド: $1"
+  },
+  "manager.bridge.target.none.hint": {
+    "message": "アカウントとリソースを選択してください。選択しない限り、ブリッジは変更を伴うコマンドとカレンダーデータを読むコマンドをすべて拒否します。"
+  },
+  "manager.bridge.stale": {
+    "message": "インストール済みのヘルパーアプリが古くなっています。もう一度ダウンロードしてインストールスクリプトを再実行し、ブリッジをオフにしてからオンにしてください。"
+  },
+  "manager.bridge.status.starting": {
+    "message": "ブリッジを起動しています…"
+  },
+  "manager.bridge.status.failed": {
+    "message": "ブリッジが失敗しました"
+  },
+  "manager.bridge.status.degraded": {
+    "message": "ブリッジが劣化しています"
+  },
+  "manager.bridge.detail.failed": {
+    "message": "ヘルパーアプリの起動に繰り返し失敗しました。無効化してから再度有効化するか、ヘルパーアプリを再インストールしてください。"
+  },
+  "manager.bridge.detail.socketDead": {
+    "message": "TbSyncとのリンクは生きていますが、ヘルパーアプリのHTTPソケットが応答しません。"
+  },
+  "manager.bridge.detail.linkDead": {
+    "message": "ヘルパーアプリは応答しますが、TbSyncへのリンクが切断されています。リクエストは応答しません。"
+  },
+  "manager.bridge.unrestricted": {
+    "message": "フルアクセス: スクリプトが任意のアカウントを自己許可し、利用可能なすべてのリソースにアクセスできます。アカウントの接続や未同期リソースの有効化も含まれます。その場合、下の許可はもはや境界ではなく、現在の状態にすぎません。使用後はオフにしてください。"
+  }
+}

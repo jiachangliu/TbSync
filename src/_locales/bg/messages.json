@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Централен потребителски интерфейс за управление на синхронизирането на контакти, календари и задачи с външни акаунти чрез добавки-доставчици."
+  },
+  "manager.title": {
+    "message": "Управител на акаунти TbSync"
+  },
+  "manager.tab.accounts": {
+    "message": "Акаунти на TbSync"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Управител на категории"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync синхронизира също категории на контакти, които са мощна замяна на несъвместимите със синхронизиране списъци с контакти. За да ги използвате в адресника на Thunderbird, можете да инсталирате добавката Category Manager. Тя позволява управление на припокриващи се групи контакти, базирани на категории, и предлага редица други свързани с категориите функции. Намира се в официалното хранилище на добавки на Mozilla:"
+  },
+  "manager.tab.help": {
+    "message": "Помощ"
+  },
+  "manager.help.wiki": {
+    "message": "Отворете уики страниците на проекта TbSync - там ще намерите допълнителна информация, ръководства и подробни описания на настройките."
+  },
+  "manager.eventLog.intro": {
+    "message": "Докладите за грешки включват съдържанието на този дневник. За по-полезен доклад повишете нивото на детайлност, изчистете дневника и възпроизведете проблема, преди да щракнете върху бутона за доклад."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Създаване на доклад за грешка"
+  },
+  "manager.eventLog.download": {
+    "message": "Запазване на журнала"
+  },
+  "bugReport.title": {
+    "message": "Създаване на доклад за грешка"
+  },
+  "bugReport.component": {
+    "message": "Компонент"
+  },
+  "bugReport.summary": {
+    "message": "Кратко описание"
+  },
+  "bugReport.description": {
+    "message": "Описание"
+  },
+  "bugReport.send": {
+    "message": "Изпращане"
+  },
+  "bugReport.cancel": {
+    "message": "Отказ"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Моля, въведете кратко описание."
+  },
+  "manager.tab.eventLog": {
+    "message": "Дневник на събитията"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Управлявана конфигурация"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Тази конфигурация е разпространена от вашия администратор и се чете от управляваното хранилище. Тя не може да бъде променяна тук."
+  },
+  "manager.eventLog.clear": {
+    "message": "Изчистване"
+  },
+  "manager.eventLog.keep": {
+    "message": "Запазване на записите от тази сесия:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Последните 5000 записа"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Всичко"
+  },
+  "manager.eventLog.empty": {
+    "message": "Все още няма събития."
+  },
+  "manager.eventLog.options": {
+    "message": "Настройки на дневника"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Ниво на детайлност при събиране на събития:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Само грешки"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Грешки и предупреждения"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Грешки, предупреждения и информационни съобщения"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Грешки, предупреждения, информационни съобщения и записи за отстраняване на грешки"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Класификация"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Ниво"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Източник"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Акаунт"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Ресурс"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Съобщение"
+  },
+  "manager.accounts.heading": {
+    "message": "Настроени акаунти"
+  },
+  "manager.accounts.col.status": {
+    "message": "Състояние"
+  },
+  "manager.providers.heading": {
+    "message": "Налични доставчици"
+  },
+  "manager.addAccount": {
+    "message": "Добавяне на акаунт"
+  },
+  "manager.noAccounts": {
+    "message": "Няма настроени акаунти"
+  },
+  "manager.noProviders": {
+    "message": "Няма инсталирани добавки-доставчици."
+  },
+  "manager.provider.install": {
+    "message": "Инсталиране от addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Инсталиране на бета версията от GitHub"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Извеждане на прозореца за настройка на преден план"
+  },
+  "provider.state.active": {
+    "message": "Готов"
+  },
+  "provider.state.stale": {
+    "message": "Повторно свързване…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Не е инсталиран"
+  },
+  "provider.state.incompatible": {
+    "message": "Несъвместима с TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Синхронизиране…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Несинхронизиран"
+  },
+  "account.status.disabled": {
+    "message": "Изключен"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Доставчикът не е наличен"
+  },
+  "account.status.needs-reauth": {
+    "message": "Неуспешно удостоверяване"
+  },
+  "account.status.error": {
+    "message": "Грешка"
+  },
+  "account.status.warning": {
+    "message": "Предупреждение"
+  },
+  "account.status.busy": {
+    "message": "Обработка…"
+  },
+  "account.status.aborted": {
+    "message": "Синхронизирането е прекъснато"
+  },
+  "folder.status.pending": {
+    "message": "Изчаква синхронизиране"
+  },
+  "folder.status.modified": {
+    "message": "Местни промени"
+  },
+  "error.E:AUTH": {
+    "message": "Неуспешно удостоверяване"
+  },
+  "syncstate.sync": {
+    "message": "Синхронизиране…"
+  },
+  "syncstate.prepare": {
+    "message": "Подготовка…"
+  },
+  "syncstate.send": {
+    "message": "Изпращане на заявка…"
+  },
+  "syncstate.eval": {
+    "message": "Обработка на отговора…"
+  },
+  "manager.detail.general": {
+    "message": "Общи"
+  },
+  "manager.detail.status": {
+    "message": "Състояние"
+  },
+  "manager.detail.provider": {
+    "message": "Доставчик:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Последно синхронизиране:"
+  },
+  "manager.resources.heading": {
+    "message": "Налични ресурси"
+  },
+  "manager.resources.description": {
+    "message": "Изберете кои от намерените ресурси трябва да се синхронизират с Thunderbird."
+  },
+  "manager.account.connect": {
+    "message": "Свързване"
+  },
+  "manager.account.disconnect": {
+    "message": "Прекъсване"
+  },
+  "manager.account.migrate": {
+    "message": "Мигриране…"
+  },
+  "manager.account.authenticate": {
+    "message": "Удостоверяване"
+  },
+  "manager.account.settings": {
+    "message": "Настройки"
+  },
+  "manager.account.services": {
+    "message": "Услуги"
+  },
+  "manager.account.remove": {
+    "message": "Премахване"
+  },
+  "manager.account.sync": {
+    "message": "Синхронизиране сега"
+  },
+  "manager.account.autosync": {
+    "message": "Автоматично синхронизиране на всеки"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "мин"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 деактивира автоматичното синхронизиране за този акаунт."
+  },
+  "manager.error.title": {
+    "message": "Грешка"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Премахване на акаунт"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Премахване на акаунта „$NAME$“? Всички локални ресурси на този акаунт също ще бъдат изтрити.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Отказ"
+  },
+  "manager.resources.empty": {
+    "message": "Все още няма ресурси."
+  },
+  "manager.resources.col.name": {
+    "message": "Име"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Read-only server access (server-enforced)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Read from and write to server"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Read-only server access (revert local changes)"
+  },
+  "folderType.contacts": {
+    "message": "Контакти"
+  },
+  "folderType.calendars": {
+    "message": "Календар"
+  },
+  "folderType.tasks": {
+    "message": "Задачи"
+  },
+  "account.status.needs-sync": {
+    "message": "Профилът трябва да се синхронизира, поне един елемент е без синхронизация"
+  },
+  "account.status.upgrading": {
+    "message": "Доставчикът извършва еднократна операция за този профил…"
+  },
+  "account.status.setting-up": {
+    "message": "Профилът се подготвя…"
+  },
+  "account.status.maintaining": {
+    "message": "Доставчикът проверява данните на този акаунт…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Настроен от по-стара версия - свържете отново за синхронизиране"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Настроена от по-стара версия - изисква мигриране"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Синхронизиране…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Грешка при синхронизация"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Предупреждение при синхронизация"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Чакащи локални промени"
+  },
+  "actionMenu.syncNow": {
+    "message": "Синхронизирай сега"
+  },
+  "options.intro": {
+    "message": "Настройките на профилите на TbSync се намират в управлението на TbSync. Натиснете бутона по-долу, за да го отворите."
+  },
+  "options.openManager": {
+    "message": "Отвори управлението на TbSync"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Покажи дневника на събитията"
+  },
+  "error.E:NETWORK": {
+    "message": "Не може да се достигне до сървъра"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Времето за операцията изтече"
+  },
+  "error.E:CANCELLED": {
+    "message": "Операцията е отменена"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Разширението на доставчика не е налично"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Несъвместима версия на протокола на доставчика"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Непознат профил"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Непозната папка"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Неподдържана команда"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Вътрешна грешка, вижте дневника със събития"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Връзката с доставчика е прекъсната"
+  },
+  "error.E:QUOTA": {
+    "message": "Превишена квота за съхранение"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Синхронизирането е неуспешно за една или повече папки"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Синхронизирането на акаунта е неуспешно"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Сървърът отказа заявката и няма да я приеме при повторен опит"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Състояние на синхронизацията"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Осиротял] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Посетете кампанията за набиране на средства за този доставчик",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Набиране на средства",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Тази регистрация е настроена от по-стара версия и не може да се синхронизира. Прекъснете връзката и я свържете отново, за да бъде изградена наново от сървъра."
+  },
+  "manager.account.migrated.held": {
+    "message": "Тази регистрация е настроена от по-стара версия и не може да се синхронизира. Запазени са $COUNT$ само локални промени - тя трябва да бъде мигрирана, преди да се използва отново.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Сървърът поиска автоматичното синхронизиране да бъде спряно до $TIME$. Ръчното синхронизиране работи по всяко време.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Мигриране на регистрацията"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ промени в „$ACCOUNT$“ никога не са били синхронизирани със сървъра и са запазени.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Мигрирането изгражда наново от сървъра всички календари и адресници на тази регистрация, след което предлага запазените промени, за да изберете кои да бъдат възстановени."
+  },
+  "migration.button.download": {
+    "message": "Резервно копие на само локалните промени"
+  },
+  "migration.button.start": {
+    "message": "Начало на мигрирането"
+  },
+  "migration.button.apply": {
+    "message": "Завършване на мигрирането на регистрацията"
+  },
+  "migration.button.close": {
+    "message": "Затваряне"
+  },
+  "migration.column.item": {
+    "message": "Елемент"
+  },
+  "migration.column.action": {
+    "message": "Действие"
+  },
+  "migration.column.type": {
+    "message": "Вид"
+  },
+  "migration.type.contact": {
+    "message": "Контакт"
+  },
+  "migration.type.event": {
+    "message": "Събитие"
+  },
+  "migration.type.task": {
+    "message": "Задача"
+  },
+  "migration.type.list": {
+    "message": "Пощенски списък"
+  },
+  "migration.running.lead": {
+    "message": "Регистрацията се изгражда наново от сървъра."
+  },
+  "migration.running.replacing": {
+    "message": "Замяна на $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Изтегляне на $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Добавяне"
+  },
+  "migration.op.modified": {
+    "message": "Обновяване"
+  },
+  "migration.op.deleted": {
+    "message": "Изтриване"
+  },
+  "migration.op.gone": {
+    "message": "вече го няма на сървъра"
+  },
+  "migration.item.unnamed": {
+    "message": "(без име)"
+  },
+  "migration.detail.empty": {
+    "message": "Няма какво да се покаже."
+  },
+  "migration.replay.lead": {
+    "message": "Ресурсите бяха изградени наново от сървъра. Изберете кои от запазените локални промени да бъдат възстановени:"
+  },
+  "migration.replay.none": {
+    "message": "Ресурсите бяха изградени наново от сървъра. Няма запазени локални промени за възстановяване."
+  },
+  "migration.done": {
+    "message": "$COUNT$ промени бяха възстановени и изчакват синхронизиране. Регистрацията е готова за употреба.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

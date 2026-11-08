@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Центральный пользовательский интерфейс для управления синхронизацией контактов, календарей и задач с внешними учётными записями через дополнения-провайдеры."
+  },
+  "manager.title": {
+    "message": "Менеджер учётных записей TbSync"
+  },
+  "manager.tab.accounts": {
+    "message": "Учётные записи TbSync"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Менеджер категорий"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync также синхронизирует категории контактов, которые являются мощной заменой несинхронизируемых списков контактов. Чтобы использовать их в адресной книге Thunderbird, можно установить дополнение Category Manager. Оно позволяет управлять перекрывающимися группами контактов на основе категорий и предоставляет ряд других связанных функций. Доступно в официальном репозитории дополнений Mozilla:"
+  },
+  "manager.tab.help": {
+    "message": "Справка"
+  },
+  "manager.help.wiki": {
+    "message": "Откройте вики-страницы проекта TbSync - там вы найдёте дополнительную информацию, руководства и подробное описание настройки."
+  },
+  "manager.eventLog.intro": {
+    "message": "Отчёты об ошибках включают содержимое этого журнала. Для более полезного отчёта повысьте уровень детализации, очистите журнал и воспроизведите проблему перед нажатием кнопки отправки отчёта."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Создать отчёт об ошибке"
+  },
+  "manager.eventLog.download": {
+    "message": "Сохранить журнал"
+  },
+  "bugReport.title": {
+    "message": "Создать отчёт об ошибке"
+  },
+  "bugReport.component": {
+    "message": "Компонент"
+  },
+  "bugReport.summary": {
+    "message": "Краткое описание"
+  },
+  "bugReport.description": {
+    "message": "Описание"
+  },
+  "bugReport.send": {
+    "message": "Отправить"
+  },
+  "bugReport.cancel": {
+    "message": "Отмена"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Введите краткое описание."
+  },
+  "manager.tab.eventLog": {
+    "message": "Журнал событий"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Управляемая конфигурация"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Эта конфигурация развёрнута вашим администратором и считывается из управляемого хранилища. Изменить её здесь нельзя."
+  },
+  "manager.eventLog.clear": {
+    "message": "Очистить"
+  },
+  "manager.eventLog.keep": {
+    "message": "Хранить записи этого сеанса:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Последние 5000 записей"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Всё"
+  },
+  "manager.eventLog.empty": {
+    "message": "Событий пока нет."
+  },
+  "manager.eventLog.options": {
+    "message": "Параметры журнала"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Уровень детализации сбора событий:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Только ошибки"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Ошибки и предупреждения"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Ошибки, предупреждения и информационные сообщения"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Ошибки, предупреждения, информационные сообщения и отладочные журналы"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Классификация"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Уровень"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Источник"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Учётная запись"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Ресурс"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Сообщение"
+  },
+  "manager.accounts.heading": {
+    "message": "Настроенные учётные записи"
+  },
+  "manager.accounts.col.status": {
+    "message": "Состояние"
+  },
+  "manager.providers.heading": {
+    "message": "Доступные провайдеры"
+  },
+  "manager.addAccount": {
+    "message": "Добавить учётную запись"
+  },
+  "manager.noAccounts": {
+    "message": "Нет настроенных учётных записей"
+  },
+  "manager.noProviders": {
+    "message": "Дополнения-провайдеры не установлены."
+  },
+  "manager.provider.install": {
+    "message": "Установить с addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Установить бета-версию с GitHub"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Вывести окно настройки на передний план"
+  },
+  "provider.state.active": {
+    "message": "Готов"
+  },
+  "provider.state.stale": {
+    "message": "Переподключение…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Не установлен"
+  },
+  "provider.state.incompatible": {
+    "message": "Несовместим с TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Синхронизация…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Не синхронизировано"
+  },
+  "account.status.disabled": {
+    "message": "Отключено"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Провайдер недоступен"
+  },
+  "account.status.needs-reauth": {
+    "message": "Ошибка аутентификации"
+  },
+  "account.status.error": {
+    "message": "Ошибка"
+  },
+  "account.status.warning": {
+    "message": "Предупреждение"
+  },
+  "account.status.busy": {
+    "message": "Обработка…"
+  },
+  "account.status.aborted": {
+    "message": "Синхронизация прервана"
+  },
+  "folder.status.pending": {
+    "message": "Ожидает синхронизации"
+  },
+  "folder.status.modified": {
+    "message": "Локальные изменения"
+  },
+  "error.E:AUTH": {
+    "message": "Ошибка аутентификации"
+  },
+  "syncstate.sync": {
+    "message": "Синхронизация…"
+  },
+  "syncstate.prepare": {
+    "message": "Подготовка…"
+  },
+  "syncstate.send": {
+    "message": "Отправка запроса…"
+  },
+  "syncstate.eval": {
+    "message": "Обработка ответа…"
+  },
+  "manager.detail.general": {
+    "message": "Общие"
+  },
+  "manager.detail.status": {
+    "message": "Состояние"
+  },
+  "manager.detail.provider": {
+    "message": "Провайдер:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Последняя синхронизация:"
+  },
+  "manager.resources.heading": {
+    "message": "Доступные ресурсы"
+  },
+  "manager.resources.description": {
+    "message": "Выберите, какие из найденных ресурсов следует синхронизировать с Thunderbird."
+  },
+  "manager.account.connect": {
+    "message": "Подключить"
+  },
+  "manager.account.disconnect": {
+    "message": "Отключить"
+  },
+  "manager.account.migrate": {
+    "message": "Перенести…"
+  },
+  "manager.account.authenticate": {
+    "message": "Аутентификация"
+  },
+  "manager.account.settings": {
+    "message": "Настройки"
+  },
+  "manager.account.services": {
+    "message": "Службы"
+  },
+  "manager.account.remove": {
+    "message": "Удалить"
+  },
+  "manager.account.sync": {
+    "message": "Синхронизировать сейчас"
+  },
+  "manager.account.autosync": {
+    "message": "Автоматическая синхронизация каждые"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "мин"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 отключает автоматическую синхронизацию для этой учётной записи."
+  },
+  "manager.error.title": {
+    "message": "Ошибка"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Удалить учётную запись"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Удалить учётную запись «$NAME$»? Все локальные ресурсы этой учётной записи также будут удалены.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Отмена"
+  },
+  "manager.resources.empty": {
+    "message": "Ресурсов пока нет."
+  },
+  "manager.resources.col.name": {
+    "message": "Название"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Доступ к серверу только для чтения (наложено сервером)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Читать и писать на сервер"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Доступ к серверу только для чтения (отменить локальные изменения)"
+  },
+  "folderType.contacts": {
+    "message": "Контакты"
+  },
+  "folderType.calendars": {
+    "message": "Календарь"
+  },
+  "folderType.tasks": {
+    "message": "Задачи"
+  },
+  "account.status.needs-sync": {
+    "message": "Учётная запись требует синхронизации, как минимум один элемент не синхронизирован"
+  },
+  "account.status.upgrading": {
+    "message": "Провайдер выполняет одноразовую операцию для этой учётной записи…"
+  },
+  "account.status.setting-up": {
+    "message": "Учётная запись подготавливается…"
+  },
+  "account.status.maintaining": {
+    "message": "Провайдер проверяет данные этой учётной записи…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Настроена в более старой версии - переподключите для синхронизации"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Настроена более старой версией - требуется перенос"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Синхронизация…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Ошибка синхронизации"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Предупреждение синхронизации"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Ожидающие локальные изменения"
+  },
+  "actionMenu.syncNow": {
+    "message": "Синхронизировать сейчас"
+  },
+  "options.intro": {
+    "message": "Настройки учётных записей TbSync находятся в Менеджере TbSync. Нажмите кнопку ниже, чтобы открыть его."
+  },
+  "options.openManager": {
+    "message": "Открыть Менеджер TbSync"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Показать журнал событий"
+  },
+  "error.E:NETWORK": {
+    "message": "Не удалось связаться с сервером"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Время операции истекло"
+  },
+  "error.E:CANCELLED": {
+    "message": "Операция отменена"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Расширение провайдера недоступно"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Несовпадение версии протокола провайдера"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Неизвестная учётная запись"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Неизвестная папка"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Неподдерживаемая команда"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Внутренняя ошибка, см. журнал событий"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Соединение с провайдером прервано"
+  },
+  "error.E:QUOTA": {
+    "message": "Превышена квота хранилища"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Ошибка синхронизации одной или нескольких папок"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Не удалось синхронизировать учётную запись"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Сервер отклонил запрос и не примет повторную попытку"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Состояние синхронизации"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Осиротевший] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Открыть кампанию по сбору средств для этого поставщика",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Сбор средств",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Эта учётная запись была настроена более старой версией и не может синхронизироваться. Отключите и подключите её заново, чтобы восстановить с сервера."
+  },
+  "manager.account.migrated.held": {
+    "message": "Эта учётная запись была настроена более старой версией и не может синхронизироваться. Сохранено только локальных изменений: $COUNT$ - её нужно перенести, прежде чем использовать снова.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Сервер попросил приостановить автоматическую синхронизацию до $TIME$. Ручная синхронизация доступна в любое время.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Перенос учётной записи"
+  },
+  "migration.intro.lead": {
+    "message": "Изменений в «$ACCOUNT$», так и не синхронизированных с сервером и сохранённых: $COUNT$.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Перенос заново создаёт с сервера все календари и адресные книги этой учётной записи, а затем предлагает сохранённые изменения, чтобы вы выбрали, какие восстановить."
+  },
+  "migration.button.download": {
+    "message": "Сохранить только локальные изменения"
+  },
+  "migration.button.start": {
+    "message": "Начать перенос"
+  },
+  "migration.button.apply": {
+    "message": "Завершить перенос учётной записи"
+  },
+  "migration.button.close": {
+    "message": "Закрыть"
+  },
+  "migration.column.item": {
+    "message": "Элемент"
+  },
+  "migration.column.action": {
+    "message": "Действие"
+  },
+  "migration.column.type": {
+    "message": "Тип"
+  },
+  "migration.type.contact": {
+    "message": "Контакт"
+  },
+  "migration.type.event": {
+    "message": "Событие"
+  },
+  "migration.type.task": {
+    "message": "Задача"
+  },
+  "migration.type.list": {
+    "message": "Список рассылки"
+  },
+  "migration.running.lead": {
+    "message": "Учётная запись создаётся заново с сервера."
+  },
+  "migration.running.replacing": {
+    "message": "Замена «$FOLDER$»…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Загрузка «$FOLDER$»…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Добавить"
+  },
+  "migration.op.modified": {
+    "message": "Обновить"
+  },
+  "migration.op.deleted": {
+    "message": "Удалить"
+  },
+  "migration.op.gone": {
+    "message": "больше нет на сервере"
+  },
+  "migration.item.unnamed": {
+    "message": "(без имени)"
+  },
+  "migration.detail.empty": {
+    "message": "Показывать нечего."
+  },
+  "migration.replay.lead": {
+    "message": "Ресурсы созданы заново с сервера. Выберите, какие из сохранённых локальных изменений следует восстановить:"
+  },
+  "migration.replay.none": {
+    "message": "Ресурсы созданы заново с сервера. Сохранённых локальных изменений для восстановления нет."
+  },
+  "migration.done": {
+    "message": "Восстановлено изменений: $COUNT$, они ожидают синхронизации. Учётной записью можно пользоваться.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

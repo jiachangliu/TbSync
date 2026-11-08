@@ -1,0 +1,149 @@
+/**
+ * Right-click context menu on the toolbar action button. Surfaces a
+ * "Sync now" submenu listing every account, with a localized status
+ * suffix on the entry name (`(Synchronizing…)`, `(Error)`,
+ * `(Local modifications)`) reflecting the account's current state.
+ *
+ * Triggers `syncAccount` directly — the manager UI doesn't need to be
+ * open. Rebuilds on `accounts-changed` and `folders-changed` so the
+ * suffix stays in sync, removing exactly the items it created last time
+ * and nothing else. It MUST NOT use `menus.removeAll()`: that removes
+ * every menu item the extension owns, including the manager page's
+ * account context menu - which then opens empty (with overrideContext,
+ * as no menu at all) from the first rebuild after a sync until the next
+ * reload. That was the long-standing "context menu works only once"
+ * bug, wrongly suspected to be an upstream issue. A JSON-snapshot dirty
+ * check skips no-op rebuilds.
+ */
+
+import { accountIconUrl } from "./account-icons.mjs";
+import * as accounts from "./accounts.mjs";
+import * as folders from "./folders.mjs";
+import * as providers from "./providers.mjs";
+import * as router from "./router.mjs";
+import * as ui from "./messaging-ui.mjs";
+import {
+  cancellingAccounts,
+  settingUpAccounts,
+  maintainingAccounts,
+  syncingAccounts,
+  upgradeAccounts,
+} from "./transient.mjs";
+import { syncAccount } from "./sync-coordinator.mjs";
+
+const PARENT_ID = "tbsync-sync-now";
+const CHILD_PREFIX = "tbsync-sync-account-";
+
+let lastSnapshot = "";
+
+export async function init() {
+  browser.menus.onClicked.addListener(onMenuClicked);
+  await rebuild();
+  ui.onInternalEvent((event) => {
+    const type = event?.type;
+    if (
+      type !== "accounts-changed" &&
+      type !== "folders-changed" &&
+      type !== "providers-changed"
+    ) {
+      return;
+    }
+    rebuild().catch((err) =>
+      console.warn("[tbsync] action-menu rebuild failed:", err?.message ?? err),
+    );
+  });
+}
+
+async function rebuild() {
+  const list = await accounts.list();
+  const needsSync = await folders.needsSyncMap();
+  const providerList = await providers.list();
+
+  const rows = list.map((acc) => ({
+    accountId: acc.accountId,
+    accountName: acc.accountName,
+    syncing: syncingAccounts.has(acc.accountId),
+    error: !!acc.error,
+    needsSync: !!needsSync[acc.accountId],
+    canSync: canSync(acc),
+    iconUrl: accountIconUrl(acc, providerList),
+  }));
+
+  const snapshot = JSON.stringify(rows);
+  if (snapshot === lastSnapshot) return;
+  lastSnapshot = snapshot;
+
+  // Children die with their parent, so removing the tracked parent is the
+  // whole cleanup. `.catch`: on the first rebuild there is nothing to
+  // remove yet.
+  await browser.menus.remove(PARENT_ID).catch(() => {});
+  if (rows.length === 0) return;
+
+  browser.menus.create({
+    id: PARENT_ID,
+    title: browser.i18n.getMessage("actionMenu.syncNow"),
+    contexts: ["browser_action"],
+  });
+
+  for (const row of rows) {
+    browser.menus.create({
+      id: CHILD_PREFIX + row.accountId,
+      parentId: PARENT_ID,
+      contexts: ["browser_action"],
+      title: row.accountName + statusSuffix(row),
+      enabled: row.canSync,
+      icons: { 16: row.iconUrl },
+    });
+  }
+}
+
+function statusSuffix({ syncing, error, needsSync, canSync }) {
+  if (syncing) {
+    return ` (${browser.i18n.getMessage("account.status.syncing")})`;
+  }
+  if (error) {
+    return ` (${browser.i18n.getMessage("account.status.error")})`;
+  }
+  if (!canSync) {
+    return ` (${browser.i18n.getMessage("account.status.disabled")})`;
+  }
+  if (needsSync) {
+    return ` (${browser.i18n.getMessage("folder.status.modified")})`;
+  }
+  return "";
+}
+
+/** Mirror the manager's `canSync` from
+ *  [manager.mjs:445](TbSync/manager/manager.mjs#L445). The menu entry
+ *  stays visible (so the user can see the account exists) but is
+ *  disabled when the click would be a no-op anyway. */
+function canSync(acc) {
+  if (!acc.enabled) return false;
+  if (upgradeAccounts.has(acc.accountId)) return false;
+  // Registered, not prepared yet - see SET_ACCOUNT_SETUP_LOCK.
+  if (settingUpAccounts.has(acc.accountId)) return false;
+  // The provider is tidying its own storage - HOST_CMD.MAINTAIN. Offering
+  // Sync here would accept a click and then make the user wait for work
+  // they never asked for and cannot see.
+  if (maintainingAccounts.has(acc.accountId)) return false;
+  if (syncingAccounts.has(acc.accountId)) return false;
+  // Being torn down. The mark outlives `syncingAccounts` on purpose - see
+  // `endAccountCancel` - so this is a window the check above does not cover.
+  if (cancellingAccounts.has(acc.accountId)) return false;
+  if (acc.error === "E:AUTH") return false;
+  // Set up by a version before 5.2.2 and not reconnected since. syncAccount
+  // refuses these, and silently, so an entry offered here would be a click
+  // with no effect and no explanation.
+  if (acc.legacyImported) return false;
+  if (!router.isProviderConnected(acc.provider)) return false;
+  return true;
+}
+
+function onMenuClicked(info) {
+  if (typeof info.menuItemId !== "string") return;
+  if (!info.menuItemId.startsWith(CHILD_PREFIX)) return;
+  const accountId = info.menuItemId.slice(CHILD_PREFIX.length);
+  syncAccount(accountId).catch((err) =>
+    console.warn("[tbsync] action-menu sync failed:", err?.message ?? err),
+  );
+}

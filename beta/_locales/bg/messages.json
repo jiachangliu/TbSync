@@ -1,0 +1,92 @@
+{
+  "manager.tab.bridge": {
+    "message": "Мост"
+  },
+  "manager.bridge.intro": {
+    "message": "Мостът позволява на локален скрипт да управлява TbSync през локален HTTP сокет, за автоматизирани тестове. Изключен е, докато не го включите оттук, и спира заедно с Thunderbird. Тази възможност съществува само в бета версията от GitHub. Тя не е част от изданието, публикувано в addons.thunderbird.net."
+  },
+  "manager.bridge.status.on": {
+    "message": "Мостът работи"
+  },
+  "manager.bridge.status.off": {
+    "message": "Мостът е спрян"
+  },
+  "manager.bridge.enable": {
+    "message": "Включване"
+  },
+  "manager.bridge.disable": {
+    "message": "Изключване"
+  },
+  "manager.bridge.download": {
+    "message": "Изтегляне на помощното приложение"
+  },
+  "manager.bridge.downloadHint": {
+    "message": "За да можете да включите моста, първо инсталирайте малкото му помощно приложение: изтеглете го, изпълнете съдържащия се в него инсталационен скрипт и рестартирайте Thunderbird."
+  },
+  "manager.bridge.target": {
+    "message": "Разрешена цел"
+  },
+  "manager.bridge.activity": {
+    "message": "Последни команди"
+  },
+  "manager.bridge.activity.empty": {
+    "message": "Все още няма команди."
+  },
+  "manager.bridge.target.account": {
+    "message": "Регистрация"
+  },
+  "manager.bridge.target.contacts": {
+    "message": "Контакти"
+  },
+  "manager.bridge.target.events": {
+    "message": "Събития"
+  },
+  "manager.bridge.target.tasks": {
+    "message": "Задачи"
+  },
+  "manager.bridge.target.none": {
+    "message": "(няма)"
+  },
+  "manager.bridge.download.failed": {
+    "message": "Изтеглянето е неуспешно: $1"
+  },
+  "manager.bridge.uninstall": {
+    "message": "Изтегляне на деинсталатора на помощното приложение"
+  },
+  "manager.bridge.endpoint": {
+    "message": "Слуша на $1"
+  },
+  "manager.bridge.example": {
+    "message": "Опитайте от команден ред:"
+  },
+  "manager.bridge.allowed": {
+    "message": "Приемани команди: $1"
+  },
+  "manager.bridge.target.none.hint": {
+    "message": "Изберете регистрация и ресурс: без тях мостът отхвърля всяка команда, която променя нещо или чете данни от календара."
+  },
+  "manager.bridge.stale": {
+    "message": "Инсталираното помощно приложение е остаряло. Изтеглете го отново, изпълнете пак инсталационния скрипт и след това изключете и включете моста."
+  },
+  "manager.bridge.status.starting": {
+    "message": "Мостът се стартира…"
+  },
+  "manager.bridge.status.failed": {
+    "message": "Мостът се провали"
+  },
+  "manager.bridge.status.degraded": {
+    "message": "Мостът е нарушен"
+  },
+  "manager.bridge.detail.failed": {
+    "message": "Помощната програма многократно не успя да се стартира. Изключете и включете отново, или я преинсталирайте."
+  },
+  "manager.bridge.detail.socketDead": {
+    "message": "Връзката с TbSync е активна, но HTTP сокетът на помощната програма не отговаря."
+  },
+  "manager.bridge.detail.linkDead": {
+    "message": "Помощната програма отговаря, но връзката ѝ с TbSync е прекъсната - заявките ще увиснат."
+  },
+  "manager.bridge.unrestricted": {
+    "message": "ПЪЛЕН ДОСТЪП: скриптовете могат сами да си предоставят всеки акаунт и достъп до всички налични ресурси - включително да свързват акаунти и да активират още несинхронизирани ресурси. Достъпът по-долу тогава вече не е граница, а само текущото състояние. Изключете след употреба."
+  }
+}

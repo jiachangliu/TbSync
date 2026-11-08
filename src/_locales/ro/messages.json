@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Interfață centrală pentru gestionarea sincronizării contactelor, calendarelor și sarcinilor cu conturi externe prin extensii furnizor."
+  },
+  "manager.title": {
+    "message": "Manager de conturi TbSync"
+  },
+  "manager.tab.accounts": {
+    "message": "Conturi TbSync"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Manager de categorii"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync sincronizează și categoriile contactelor, care reprezintă o alternativă puternică pentru listele de contacte care nu se pot sincroniza. Pentru a le folosi în agenda Thunderbird puteți instala extensia Category Manager. Aceasta permite gestionarea grupurilor de contacte suprapuse pe bază de categorii și oferă mai multe alte funcționalități legate de categorii. Este disponibilă în depozitul oficial de extensii Mozilla:"
+  },
+  "manager.tab.help": {
+    "message": "Ajutor"
+  },
+  "manager.help.wiki": {
+    "message": "Deschideți paginile wiki ale proiectului TbSync - acolo veți găsi informații suplimentare, ghiduri și descrieri detaliate de configurare."
+  },
+  "manager.eventLog.intro": {
+    "message": "Rapoartele de eroare includ conținutul acestui jurnal. Pentru un raport mai util, creșteți nivelul de detaliere, goliți jurnalul și reproduceți problema înainte de a apăsa pe butonul de raport."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Creează raport de eroare"
+  },
+  "manager.eventLog.download": {
+    "message": "Salvează jurnalul"
+  },
+  "bugReport.title": {
+    "message": "Creează raport de eroare"
+  },
+  "bugReport.component": {
+    "message": "Componentă"
+  },
+  "bugReport.summary": {
+    "message": "Rezumat"
+  },
+  "bugReport.description": {
+    "message": "Descriere"
+  },
+  "bugReport.send": {
+    "message": "Trimite"
+  },
+  "bugReport.cancel": {
+    "message": "Anulează"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Introduceți un rezumat."
+  },
+  "manager.tab.eventLog": {
+    "message": "Jurnal de evenimente"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Configurație gestionată"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Această configurație a fost implementată de administratorul dumneavoastră și este citită din stocarea gestionată. Nu poate fi modificată aici."
+  },
+  "manager.eventLog.clear": {
+    "message": "Golește"
+  },
+  "manager.eventLog.keep": {
+    "message": "Păstrează intrările din această sesiune:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Ultimele 5000 de intrări"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Tot"
+  },
+  "manager.eventLog.empty": {
+    "message": "Încă nu există evenimente."
+  },
+  "manager.eventLog.options": {
+    "message": "Opțiuni jurnal"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Nivel de detaliere pentru colectarea evenimentelor:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Numai erori"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Erori și avertismente"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Erori, avertismente și mesaje informative"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Erori, avertismente, mesaje informative și jurnale de depanare"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Clasificare"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Nivel"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Sursă"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Cont"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Resursă"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Mesaj"
+  },
+  "manager.accounts.heading": {
+    "message": "Conturi configurate"
+  },
+  "manager.accounts.col.status": {
+    "message": "Stare"
+  },
+  "manager.providers.heading": {
+    "message": "Furnizori disponibili"
+  },
+  "manager.addAccount": {
+    "message": "Adaugă cont"
+  },
+  "manager.noAccounts": {
+    "message": "Niciun cont configurat"
+  },
+  "manager.noProviders": {
+    "message": "Nicio extensie furnizor instalată."
+  },
+  "manager.provider.install": {
+    "message": "Instalează de pe addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Instalează versiunea beta de pe GitHub"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Adu fereastra de configurare în prim-plan"
+  },
+  "provider.state.active": {
+    "message": "Pregătit"
+  },
+  "provider.state.stale": {
+    "message": "Reconectare…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Neinstalat"
+  },
+  "provider.state.incompatible": {
+    "message": "Incompatibil cu TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Se sincronizează…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Nesincronizat"
+  },
+  "account.status.disabled": {
+    "message": "Deconectat"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Furnizor indisponibil"
+  },
+  "account.status.needs-reauth": {
+    "message": "Autentificare eșuată"
+  },
+  "account.status.error": {
+    "message": "Eroare"
+  },
+  "account.status.warning": {
+    "message": "Avertisment"
+  },
+  "account.status.busy": {
+    "message": "Se procesează…"
+  },
+  "account.status.aborted": {
+    "message": "Sincronizare întreruptă"
+  },
+  "folder.status.pending": {
+    "message": "În așteptare pentru sincronizare"
+  },
+  "folder.status.modified": {
+    "message": "Modificări locale"
+  },
+  "error.E:AUTH": {
+    "message": "Autentificare eșuată"
+  },
+  "syncstate.sync": {
+    "message": "Se sincronizează…"
+  },
+  "syncstate.prepare": {
+    "message": "Se pregătește…"
+  },
+  "syncstate.send": {
+    "message": "Se trimite cererea…"
+  },
+  "syncstate.eval": {
+    "message": "Se procesează răspunsul…"
+  },
+  "manager.detail.general": {
+    "message": "General"
+  },
+  "manager.detail.status": {
+    "message": "Stare"
+  },
+  "manager.detail.provider": {
+    "message": "Furnizor:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Ultima sincronizare:"
+  },
+  "manager.resources.heading": {
+    "message": "Resurse disponibile"
+  },
+  "manager.resources.description": {
+    "message": "Selectați care dintre resursele găsite trebuie sincronizate cu Thunderbird."
+  },
+  "manager.account.connect": {
+    "message": "Conectează"
+  },
+  "manager.account.disconnect": {
+    "message": "Deconectează"
+  },
+  "manager.account.migrate": {
+    "message": "Migrare…"
+  },
+  "manager.account.authenticate": {
+    "message": "Autentifică"
+  },
+  "manager.account.settings": {
+    "message": "Setări"
+  },
+  "manager.account.services": {
+    "message": "Servicii"
+  },
+  "manager.account.remove": {
+    "message": "Elimină"
+  },
+  "manager.account.sync": {
+    "message": "Sincronizează acum"
+  },
+  "manager.account.autosync": {
+    "message": "Sincronizare automată la fiecare"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "min"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 dezactivează sincronizarea automată pentru acest cont."
+  },
+  "manager.error.title": {
+    "message": "Eroare"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Elimină contul"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Eliminați contul „$NAME$”? Toate resursele locale ale acestui cont vor fi de asemenea șterse.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Anulează"
+  },
+  "manager.resources.empty": {
+    "message": "Încă nu există resurse."
+  },
+  "manager.resources.col.name": {
+    "message": "Nume"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Read-only server access (server-enforced)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Read from and write to server"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Read-only server access (revert local changes)"
+  },
+  "folderType.contacts": {
+    "message": "Contacte"
+  },
+  "folderType.calendars": {
+    "message": "Calendar"
+  },
+  "folderType.tasks": {
+    "message": "Sarcini"
+  },
+  "account.status.needs-sync": {
+    "message": "Contul trebuie sincronizat, cel puțin un element este desincronizat"
+  },
+  "account.status.upgrading": {
+    "message": "Furnizorul efectuează o operațiune unică pentru acest cont…"
+  },
+  "account.status.setting-up": {
+    "message": "Contul este în curs de pregătire…"
+  },
+  "account.status.maintaining": {
+    "message": "Furnizorul verifică datele acestui cont…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Configurat de o versiune mai veche - reconectați-l pentru sincronizare"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Configurat de o versiune mai veche - necesită migrare"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Sincronizare…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Eroare de sincronizare"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Avertisment de sincronizare"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Modificări locale în așteptare"
+  },
+  "actionMenu.syncNow": {
+    "message": "Sincronizează acum"
+  },
+  "options.intro": {
+    "message": "Setările conturilor TbSync se află în Managerul TbSync. Apăsați butonul de mai jos pentru a-l deschide."
+  },
+  "options.openManager": {
+    "message": "Deschide Managerul TbSync"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Afișează jurnalul de evenimente"
+  },
+  "error.E:NETWORK": {
+    "message": "Nu s-a putut contacta serverul"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Operațiunea a expirat"
+  },
+  "error.E:CANCELLED": {
+    "message": "Operațiune anulată"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Extensia furnizorului nu este disponibilă"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Versiunea de protocol a furnizorului nu este compatibilă"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Cont necunoscut"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Folder necunoscut"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Comandă nesuportată"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Eroare internă, consultați jurnalul de evenimente"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Deconectat de la furnizor"
+  },
+  "error.E:QUOTA": {
+    "message": "Cota de stocare a fost depășită"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Sincronizarea a eșuat pentru unul sau mai multe foldere"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Contul nu a putut fi sincronizat"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Serverul a refuzat cererea și nu va accepta o reîncercare"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Starea sincronizării"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Orfan] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Vizitați campania de strângere de fonduri pentru acest furnizor",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Strângere de fonduri",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Acest cont a fost configurat de o versiune mai veche și nu se poate sincroniza. Deconectați-l și reconectați-l pentru a-l reconstrui de pe server."
+  },
+  "manager.account.migrated.held": {
+    "message": "Acest cont a fost configurat de o versiune mai veche și nu se poate sincroniza. Au fost salvate $COUNT$ modificări doar locale, așa că trebuie migrat înainte de a putea fi folosit din nou.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Serverul a cerut suspendarea sincronizării automate până la $TIME$. Sincronizarea manuală funcționează oricând.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Migrare cont"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ modificări ale contului „$ACCOUNT$” nu au fost niciodată sincronizate cu serverul și au fost salvate.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Migrarea reconstruiește de pe server toate calendarele și agendele acestui cont, apoi vă oferă modificările salvate ca să alegeți pe care să le restaurați."
+  },
+  "migration.button.download": {
+    "message": "Salvează modificările doar locale"
+  },
+  "migration.button.start": {
+    "message": "Pornește migrarea"
+  },
+  "migration.button.apply": {
+    "message": "Finalizează migrarea contului"
+  },
+  "migration.button.close": {
+    "message": "Închide"
+  },
+  "migration.column.item": {
+    "message": "Element"
+  },
+  "migration.column.action": {
+    "message": "Acțiune"
+  },
+  "migration.column.type": {
+    "message": "Tip"
+  },
+  "migration.type.contact": {
+    "message": "Contact"
+  },
+  "migration.type.event": {
+    "message": "Eveniment"
+  },
+  "migration.type.task": {
+    "message": "Sarcină"
+  },
+  "migration.type.list": {
+    "message": "Listă de distribuție"
+  },
+  "migration.running.lead": {
+    "message": "Contul este reconstruit de pe server."
+  },
+  "migration.running.replacing": {
+    "message": "Se înlocuiește $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Se descarcă $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Adaugă"
+  },
+  "migration.op.modified": {
+    "message": "Actualizează"
+  },
+  "migration.op.deleted": {
+    "message": "Șterge"
+  },
+  "migration.op.gone": {
+    "message": "nu mai există pe server"
+  },
+  "migration.item.unnamed": {
+    "message": "(fără nume)"
+  },
+  "migration.detail.empty": {
+    "message": "Nu este nimic de afișat."
+  },
+  "migration.replay.lead": {
+    "message": "Resursele au fost reconstruite de pe server. Selectați care dintre modificările locale salvate să fie restaurate:"
+  },
+  "migration.replay.none": {
+    "message": "Resursele au fost reconstruite de pe server. Nu există modificări locale salvate de restaurat."
+  },
+  "migration.done": {
+    "message": "$COUNT$ modificări au fost restaurate și așteaptă sincronizarea. Contul poate fi folosit.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

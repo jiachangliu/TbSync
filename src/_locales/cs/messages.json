@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Centrální uživatelské rozhraní pro správu synchronizace kontaktů, kalendářů a úkolů s externími účty prostřednictvím doplňků poskytovatelů."
+  },
+  "manager.title": {
+    "message": "Správce účtů TbSync"
+  },
+  "manager.tab.accounts": {
+    "message": "Účty TbSync"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Správce kategorií"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync rovněž synchronizuje kategorie kontaktů, které jsou výkonnou náhradou nesynchronizovatelných seznamů kontaktů. Abyste je mohli používat v adresáři Thunderbirdu, můžete nainstalovat doplněk Category Manager. Umožňuje spravovat překrývající se skupiny kontaktů založené na kategoriích a nabízí řadu dalších funkcí souvisejících s kategoriemi. Najdete ho v oficiálním repozitáři doplňků Mozilly:"
+  },
+  "manager.tab.help": {
+    "message": "Nápověda"
+  },
+  "manager.help.wiki": {
+    "message": "Otevřete wiki stránky projektu TbSync - najdete tam další informace, návody a podrobné popisy konfigurace."
+  },
+  "manager.eventLog.intro": {
+    "message": "Hlášení chyb obsahují obsah tohoto protokolu. Pro užitečnější hlášení zvyšte úroveň podrobnosti, vyčistěte protokol a zopakujte problém před kliknutím na tlačítko hlášení."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Vytvořit hlášení chyby"
+  },
+  "manager.eventLog.download": {
+    "message": "Uložit protokol"
+  },
+  "bugReport.title": {
+    "message": "Vytvořit hlášení chyby"
+  },
+  "bugReport.component": {
+    "message": "Komponenta"
+  },
+  "bugReport.summary": {
+    "message": "Souhrn"
+  },
+  "bugReport.description": {
+    "message": "Popis"
+  },
+  "bugReport.send": {
+    "message": "Odeslat"
+  },
+  "bugReport.cancel": {
+    "message": "Zrušit"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Zadejte prosím souhrn."
+  },
+  "manager.tab.eventLog": {
+    "message": "Protokol událostí"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Spravovaná konfigurace"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Tuto konfiguraci nasadil váš správce a načítá se ze spravovaného úložiště. Zde ji nelze změnit."
+  },
+  "manager.eventLog.clear": {
+    "message": "Vyčistit"
+  },
+  "manager.eventLog.keep": {
+    "message": "Uchovávat záznamy této relace:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Posledních 5000 záznamů"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Vše"
+  },
+  "manager.eventLog.empty": {
+    "message": "Zatím žádné události."
+  },
+  "manager.eventLog.options": {
+    "message": "Nastavení protokolu"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Úroveň podrobnosti pro sběr událostí:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Pouze chyby"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Chyby a varování"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Chyby, varování a informační zprávy"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Chyby, varování, informační zprávy a ladicí záznamy"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Klasifikace"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Úroveň"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Původce"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Účet"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Zdroj"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Zpráva"
+  },
+  "manager.accounts.heading": {
+    "message": "Nakonfigurované účty"
+  },
+  "manager.accounts.col.status": {
+    "message": "Stav"
+  },
+  "manager.providers.heading": {
+    "message": "Dostupní poskytovatelé"
+  },
+  "manager.addAccount": {
+    "message": "Přidat účet"
+  },
+  "manager.noAccounts": {
+    "message": "Žádné nakonfigurované účty"
+  },
+  "manager.noProviders": {
+    "message": "Žádné doplňky poskytovatelů nejsou nainstalovány."
+  },
+  "manager.provider.install": {
+    "message": "Nainstalovat z addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Nainstalovat beta verzi z GitHubu"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Přenést okno nastavení do popředí"
+  },
+  "provider.state.active": {
+    "message": "Připraven"
+  },
+  "provider.state.stale": {
+    "message": "Opětovné připojení…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Nenainstalováno"
+  },
+  "provider.state.incompatible": {
+    "message": "Nekompatibilní s TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Synchronizuje se…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Nesynchronizováno"
+  },
+  "account.status.disabled": {
+    "message": "Odpojeno"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Poskytovatel není dostupný"
+  },
+  "account.status.needs-reauth": {
+    "message": "Ověření selhalo"
+  },
+  "account.status.error": {
+    "message": "Chyba"
+  },
+  "account.status.warning": {
+    "message": "Varování"
+  },
+  "account.status.busy": {
+    "message": "Pracuje se…"
+  },
+  "account.status.aborted": {
+    "message": "Synchronizace přerušena"
+  },
+  "folder.status.pending": {
+    "message": "Čeká na synchronizaci"
+  },
+  "folder.status.modified": {
+    "message": "Místní změny"
+  },
+  "error.E:AUTH": {
+    "message": "Ověření selhalo"
+  },
+  "syncstate.sync": {
+    "message": "Synchronizuje se…"
+  },
+  "syncstate.prepare": {
+    "message": "Připravuje se…"
+  },
+  "syncstate.send": {
+    "message": "Odesílá se požadavek…"
+  },
+  "syncstate.eval": {
+    "message": "Zpracovává se odpověď…"
+  },
+  "manager.detail.general": {
+    "message": "Obecné"
+  },
+  "manager.detail.status": {
+    "message": "Stav"
+  },
+  "manager.detail.provider": {
+    "message": "Poskytovatel:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Poslední synchronizace:"
+  },
+  "manager.resources.heading": {
+    "message": "Dostupné zdroje"
+  },
+  "manager.resources.description": {
+    "message": "Vyberte, které z nalezených zdrojů se mají synchronizovat s Thunderbirdem."
+  },
+  "manager.account.connect": {
+    "message": "Připojit"
+  },
+  "manager.account.disconnect": {
+    "message": "Odpojit"
+  },
+  "manager.account.migrate": {
+    "message": "Migrovat…"
+  },
+  "manager.account.authenticate": {
+    "message": "Ověřit"
+  },
+  "manager.account.settings": {
+    "message": "Nastavení"
+  },
+  "manager.account.services": {
+    "message": "Služby"
+  },
+  "manager.account.remove": {
+    "message": "Odstranit"
+  },
+  "manager.account.sync": {
+    "message": "Synchronizovat nyní"
+  },
+  "manager.account.autosync": {
+    "message": "Automaticky synchronizovat každých"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "min"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 vypne automatickou synchronizaci pro tento účet."
+  },
+  "manager.error.title": {
+    "message": "Chyba"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Odstranit účet"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Odebrat účet „$NAME$“? Budou smazány také všechny místní zdroje tohoto účtu.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Zrušit"
+  },
+  "manager.resources.empty": {
+    "message": "Zatím žádné zdroje."
+  },
+  "manager.resources.col.name": {
+    "message": "Název"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Přístup na server pouze pro čtení (vynuceno serverem)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Přístup na server pro čtení i zápis"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Přistup na server pouze pro čtení (odstranit místní změny)"
+  },
+  "folderType.contacts": {
+    "message": "Kontakty"
+  },
+  "folderType.calendars": {
+    "message": "Kalendář"
+  },
+  "folderType.tasks": {
+    "message": "Úkoly"
+  },
+  "account.status.needs-sync": {
+    "message": "Účet je třeba synchronizovat, alespoň jedna položka není synchronizována"
+  },
+  "account.status.upgrading": {
+    "message": "Poskytovatel provádí jednorázovou operaci na tomto účtu…"
+  },
+  "account.status.setting-up": {
+    "message": "Účet se připravuje…"
+  },
+  "account.status.maintaining": {
+    "message": "Poskytovatel kontroluje data tohoto účtu…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Nastaveno starší verzí - pro synchronizaci znovu připojte"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Nastaveno starší verzí - vyžaduje migraci"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Synchronizace…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Chyba synchronizace"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Upozornění synchronizace"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Čekající místní změny"
+  },
+  "actionMenu.syncNow": {
+    "message": "Synchronizovat nyní"
+  },
+  "options.intro": {
+    "message": "Nastavení účtů TbSync najdete ve Správci TbSync. Klepněte na tlačítko níže pro jeho otevření."
+  },
+  "options.openManager": {
+    "message": "Otevřít Správce TbSync"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Zobrazit protokol událostí"
+  },
+  "error.E:NETWORK": {
+    "message": "Server není dostupný"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Vypršel časový limit operace"
+  },
+  "error.E:CANCELLED": {
+    "message": "Operace zrušena"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Rozšíření poskytovatele není dostupné"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Neshoda verze protokolu poskytovatele"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Neznámý účet"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Neznámá složka"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Nepodporovaný příkaz"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Vnitřní chyba, viz protokol událostí"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Spojení s poskytovatelem ukončeno"
+  },
+  "error.E:QUOTA": {
+    "message": "Úložná kvóta překročena"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Synchronizace selhala u jedné nebo více složek"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Synchronizace účtu selhala"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Server požadavek odmítl a nepřijme jej ani při opakování"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Stav synchronizace"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Osiřelé] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Navštívit sbírku na financování tohoto poskytovatele",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Sbírka",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Tento účet byl nastaven starší verzí a nemůže se synchronizovat. Odpojte jej a znovu připojte, aby se obnovil ze serveru."
+  },
+  "manager.account.migrated.held": {
+    "message": "Tento účet byl nastaven starší verzí a nemůže se synchronizovat. Bylo zachráněno $COUNT$ pouze místních změn - před dalším použitím je nutné účet migrovat.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Server požádal o pozastavení automatické synchronizace do $TIME$. Ruční synchronizace funguje kdykoli.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Migrovat účet"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ změn v účtu „$ACCOUNT$“ nebylo nikdy synchronizováno se serverem a bylo zachráněno.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Migrace znovu sestaví ze serveru všechny kalendáře a adresáře tohoto účtu a poté nabídne zachráněné změny, abyste si vybrali, které obnovit."
+  },
+  "migration.button.download": {
+    "message": "Zálohovat pouze místní změny"
+  },
+  "migration.button.start": {
+    "message": "Spustit migraci"
+  },
+  "migration.button.apply": {
+    "message": "Dokončit migraci účtu"
+  },
+  "migration.button.close": {
+    "message": "Zavřít"
+  },
+  "migration.column.item": {
+    "message": "Položka"
+  },
+  "migration.column.action": {
+    "message": "Akce"
+  },
+  "migration.column.type": {
+    "message": "Typ"
+  },
+  "migration.type.contact": {
+    "message": "Kontakt"
+  },
+  "migration.type.event": {
+    "message": "Událost"
+  },
+  "migration.type.task": {
+    "message": "Úkol"
+  },
+  "migration.type.list": {
+    "message": "Konference"
+  },
+  "migration.running.lead": {
+    "message": "Účet se znovu sestavuje ze serveru."
+  },
+  "migration.running.replacing": {
+    "message": "Nahrazuje se $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Stahuje se $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Přidat"
+  },
+  "migration.op.modified": {
+    "message": "Aktualizovat"
+  },
+  "migration.op.deleted": {
+    "message": "Smazat"
+  },
+  "migration.op.gone": {
+    "message": "již není na serveru"
+  },
+  "migration.item.unnamed": {
+    "message": "(bez názvu)"
+  },
+  "migration.detail.empty": {
+    "message": "Není co zobrazit."
+  },
+  "migration.replay.lead": {
+    "message": "Vaše zdroje byly znovu sestaveny ze serveru. Vyberte, které ze zachráněných místních změn se mají obnovit:"
+  },
+  "migration.replay.none": {
+    "message": "Vaše zdroje byly znovu sestaveny ze serveru. Nejsou žádné zachráněné místní změny k obnovení."
+  },
+  "migration.done": {
+    "message": "$COUNT$ změn bylo obnoveno a čeká na synchronizaci. Účet je připraven k použití.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

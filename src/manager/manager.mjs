@@ -1,0 +1,2241 @@
+/**
+ * Account manager popup controller.
+ *
+ * Connects to the background via a "tbsync-manager" port, pulls state via
+ * `getState`/`getFolders` RPCs, and rerenders on broadcast events like
+ * `accounts-changed`, `folders-changed`, `providers-changed`.
+ */
+
+import {
+  PROVIDER_NOTIFY,
+  SYNCSTATE_BASE_KEYS,
+} from "../vendor/tbsync/protocol.mjs";
+import { accountIconUrl, providerIconUrl } from "../modules/account-icons.mjs";
+import { isBetaBuild } from "../modules/channel.mjs";
+import { FOLDER_TYPES } from "../modules/folder-types.mjs";
+import { hasLocalChanges, hasWarning } from "../modules/folders.mjs";
+import { createManagerClient } from "../modules/manager-client.mjs";
+import { EVENT_LOG_DISPLAY_MAX } from "../modules/storage-keys.mjs";
+import { localizeDocument } from "../vendor/i18n/i18n.mjs";
+
+// Self-publish our tab id to session storage so the background can find
+// us. Crucial for the session-restore case: browser.storage.session is
+// wiped at restart, but Thunderbird may restore the manager tab on its
+// own. The restored manager.mjs runs here, re-publishes the id, and a
+// later click on the action button focuses this tab instead of opening
+// a duplicate. The manager is the sole writer of this key; the
+// background only reads it.
+browser.tabs
+  .getCurrent()
+  .then((tab) => {
+    if (tab?.id != null) {
+      return browser.storage.session.set({ managerTabId: tab.id });
+    }
+    return null;
+  })
+  .catch((err) =>
+    console.debug("[tbsync] manager: publishing tab id failed:", err),
+  );
+
+// ── i18n helper ───────────────────────────────────────────────────────────
+
+/** Look up a localized message, falling back to the inline default if the
+ *  key is missing. `||` (not `??`) because `getMessage` returns "" for
+ *  unknown keys, not null. Optional third arg is the substitutions array
+ *  forwarded to `getMessage` for placeholder-bearing keys. */
+const i18n = (key, fallback, substitutions) =>
+  browser.i18n.getMessage(key, substitutions) || fallback;
+
+/** This TbSync's own version, for the places that compare it with a
+ *  provider's. */
+const HOST_VERSION = browser.runtime.getManifest().version;
+
+// ── DOM helpers ───────────────────────────────────────────────────────────
+
+/** Clone a template's first element. For templates whose <template> wraps
+ *  a single root element (row templates, install-icon). */
+function cloneTpl(id) {
+  return document.getElementById(id).content.firstElementChild.cloneNode(true);
+}
+
+/** Clone a template's full fragment. For templates with multiple top-level
+ *  children (e.g. tpl-detail with three <section>s). */
+function cloneTplFragment(id) {
+  return document.getElementById(id).content.cloneNode(true);
+}
+
+/** Localize `data-i18n-content` attributes inside a subtree. The vendor
+ *  localizeDocument only walks the live document once at boot, so cloned
+ *  template content needs this pass before insertion. */
+function localizeSubtree(root) {
+  for (const el of root.querySelectorAll("[data-i18n-content]")) {
+    const key = el.dataset.i18nContent;
+    el.textContent = browser.i18n.getMessage(key) || key;
+  }
+}
+
+/** Build an `<img>` with the given attributes. Callers that only need
+ *  `src`/`alt`/`title`/`class` use this instead of template boilerplate. */
+function makeImg({ src, alt = "", title, className }) {
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt;
+  if (title != null) img.title = title;
+  if (className) img.className = className;
+  return img;
+}
+
+// Per-folder transient cache populated by REPORT_SYNC_STATE and
+// REPORT_PROGRESS. Cleared on folders-changed for the owning account.
+// See SYNCSTATE_BASE_KEYS doc in protocol.mjs for the rendering contract.
+const folderSyncCache = new Map(); // folderId -> {syncState, label, itemsDone, itemsTotal, startedAt}
+const countdownTimers = new Map(); // folderId -> interval handle
+
+const state = {
+  accounts: [],
+  providers: [],
+  folders: new Map(), // accountId -> folders[]
+  selectedAccountId: null,
+  // Set of providerIds currently mid-setup. Each provider can have at
+  // most one in-flight setup at a time; concurrent setups for *different*
+  // providers are allowed.
+  setupsInFlight: new Set(),
+  // accountIds whose config popup is open right now. Lets btn-settings
+  // route a re-click to focusAccountPopup instead of staying greyed out.
+  configsOpen: new Set(),
+  // accountIds whose reauth popup is open right now. Same logic as
+  // configsOpen for the Authenticate button. Kept separate even though
+  // both now send the same RPC: these gate different buttons, and one
+  // shared set would enable Settings during a re-auth.
+  reauthsOpen: new Set(),
+  // What the table shows: the newest EVENT_LOG_DISPLAY_MAX entries, which
+  // with the limit lifted is a window onto a much longer log.
+  eventLog: [],
+  // Highest seq we've already rendered, so a re-announced entry is ignored.
+  lastSeenSeq: -1,
+  settings: { logLevel: 0, eventLogUnlimited: false },
+  // Host-derived transient sets, snapshotted per getState call.
+  transient: {
+    syncingAccounts: new Set(),
+    cancellingAccounts: new Set(),
+    busyAccounts: new Set(),
+    busyFolders: new Set(),
+    upgradeAccounts: new Set(),
+    settingUpAccounts: new Set(),
+    maintainingAccounts: new Set(),
+  },
+};
+
+const { rpc } = createManagerClient({
+  onEvent: handleEvent,
+  onReconnect: () =>
+    refreshState().catch((err) =>
+      console.debug("[tbsync] manager: refreshState on reconnect failed:", err),
+    ),
+});
+
+// ── Event dispatch from background ────────────────────────────────────────
+
+function handleEvent(event) {
+  switch (event.type) {
+    case "accounts-changed":
+    case "providers-changed":
+      refreshState();
+      break;
+    case "folders-changed":
+      if (event.accountId) {
+        clearFolderSyncCacheForAccount(event.accountId);
+        refreshFolders(event.accountId);
+        // A folder change can flip `acc.needsSync` (new pending edit, or
+        // last pending edit cleared by sync) - refresh the whole account
+        // list so the sidebar status icon updates.
+        refreshState();
+      }
+      break;
+    case PROVIDER_NOTIFY.REPORT_SYNC_STATE:
+    case PROVIDER_NOTIFY.REPORT_PROGRESS:
+      updateInlineSyncState(event);
+      break;
+    case "settings-changed":
+      refreshState();
+      break;
+    // The log lives in IndexedDB, which has no cross-context change event,
+    // so every appender announces its entry here - one entry per message,
+    // and only while a manager tab is open. Every appender (host or via
+    // router) goes through `eventLog.append`, so this catches all of them.
+    case "event-log-entry": {
+      const entry = event.entry;
+      if (typeof entry?.seq !== "number") break;
+      if (entry.seq <= state.lastSeenSeq) break;
+      // seq is dense - it only advances when an entry is really stored -
+      // so a jump means an announcement never arrived. Reload instead of
+      // leaving a hole: the storage-driven path this replaces carried the
+      // whole log every time and healed itself.
+      if (state.lastSeenSeq >= 0 && entry.seq > state.lastSeenSeq + 1) {
+        refreshState();
+        break;
+      }
+      appendEventLogEntry(entry);
+      state.lastSeenSeq = entry.seq;
+      break;
+    }
+    case "event-log-cleared":
+      state.eventLog = [];
+      state.lastSeenSeq = -1;
+      renderEventLog();
+      break;
+  }
+}
+
+// ── Data loaders ──────────────────────────────────────────────────────────
+
+async function refreshState() {
+  const s = await rpc("getState");
+  state.accounts = s.accounts;
+  state.providers = s.providers;
+  state.eventLog = s.eventLog ?? [];
+  state.lastSeenSeq = state.eventLog.length
+    ? state.eventLog[state.eventLog.length - 1].seq
+    : -1;
+  state.settings = s.settings ?? state.settings;
+  const prevSyncing = state.transient.syncingAccounts;
+  state.transient.syncingAccounts = new Set(s.transient?.syncingAccounts ?? []);
+  state.transient.cancellingAccounts = new Set(
+    s.transient?.cancellingAccounts ?? [],
+  );
+  state.transient.busyAccounts = new Set(s.transient?.busyAccounts ?? []);
+  state.transient.busyFolders = new Set(s.transient?.busyFolders ?? []);
+  state.transient.upgradeAccounts = new Set(s.transient?.upgradeAccounts ?? []);
+  state.transient.settingUpAccounts = new Set(
+    s.transient?.settingUpAccounts ?? [],
+  );
+  state.transient.maintainingAccounts = new Set(
+    s.transient?.maintainingAccounts ?? [],
+  );
+
+  // Wipe stale per-folder sync cache when an account toggles in or out of
+  // syncing. On entry: clear leftovers from the previous run that
+  // `folders-changed` may not have caught. On exit: clear any trailing
+  // notifications that arrived between the last folders-changed wipe and
+  // the account leaving syncingAccounts. With this guarantee the cache
+  // only ever holds entries from the current run, and `isCurrentlySyncing`
+  // can derive directly from it without a parallel marker map.
+  for (const accId of prevSyncing) {
+    if (!state.transient.syncingAccounts.has(accId))
+      clearFolderSyncCacheForAccount(accId);
+  }
+  for (const accId of state.transient.syncingAccounts) {
+    if (!prevSyncing.has(accId)) clearFolderSyncCacheForAccount(accId);
+  }
+  syncLogOptions();
+
+  // Invariant: exactly one account is selected whenever any exist.
+  if (
+    state.selectedAccountId &&
+    !state.accounts.some((a) => a.accountId === state.selectedAccountId)
+  ) {
+    state.selectedAccountId = null;
+  }
+  if (!state.selectedAccountId && state.accounts.length) {
+    state.selectedAccountId = state.accounts[0].accountId;
+  }
+
+  renderSidebar();
+  renderDetail();
+  renderEventLog();
+  // Fetch folders for every account, not just the selected one, so the
+  // sidebar's status icon (computed by `deriveAccountResultStatus` from
+  // per-folder state) is correct for every row. Without this, accounts
+  // whose folders haven't been pulled yet fall through to
+  // `selected.length === 0` → "notsyncronized" and render the info
+  // icon. Calls run in parallel; each one re-renders the sidebar as
+  // its data arrives.
+  for (const a of state.accounts) refreshFolders(a.accountId);
+}
+
+async function refreshFolders(accountId) {
+  const { folders } = await rpc("getFolders", { accountId });
+  state.folders.set(accountId, folders);
+  // Sidebar pill is derived from aggregated folder state, so it needs a
+  // redraw whenever any folder changes - not just the detail card.
+  renderSidebar();
+  if (accountId === state.selectedAccountId) renderDetail();
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────
+
+/** Resolve a Message string (from folder.warning / folder.error / account.*)
+ *  for display. See the contract in protocol.mjs: predefined code → host
+ *  locale, else free-text verbatim. */
+function messageText(msg) {
+  if (!msg) return "";
+  return (
+    browser.i18n.getMessage("error." + msg) ||
+    browser.i18n.getMessage("warning." + msg) ||
+    msg
+  );
+}
+
+/** Derive the account-level status name (one of the keys in
+ *  `STATUS_ICON_FILE`) appropriate for this folder, so the per-folder
+ *  status icon can reuse `statusIconEl` and look identical to the
+ *  account-row icon. The `"syncing"` value triggers `.syncing` →
+ *  the rotation keyframe in manager.css. Returns null when the cell
+ *  should stay empty (deselected, or a never-synced folder). Mirrors
+ *  the priority of `row1StatusText` so icon and text agree on every
+ *  render. */
+function folderResultStatus(f) {
+  if (isCurrentlySyncing(f)) return "syncing";
+  if (!f.selected) return null;
+  if (!state.transient.syncingAccounts.has(f.accountId) && hasLocalChanges(f))
+    return "needs-sync";
+  switch (f.status) {
+    case "pending":
+      return state.transient.syncingAccounts.has(f.accountId)
+        ? null
+        : "notsyncronized";
+    case "success":
+      return "success";
+    case "warning":
+      return "warning";
+    case "error":
+      return "error";
+    case "aborted":
+      return "notsyncronized";
+    default:
+      return null;
+  }
+}
+
+/** Text for the main folder row's `col-status` cell. The row is the
+ *  steady-state identity for this folder: the user-visible name of the
+ *  bound local resource. Until the first sync binds a target,
+ *  "Waiting to be synchronized" stands in for the absent name. */
+function row1StatusText(f) {
+  if (!f.selected) return "";
+  return (
+    f.targetName ?? i18n("folder.status.pending", "Waiting to be synchronized")
+  );
+}
+
+/** True when notifications are currently arriving for this folder.
+ *  Derived directly from `folderSyncCache`: an entry with `syncState`
+ *  set means `updateInlineSyncState` recorded a notification for this
+ *  folder during the *current* sync run (the cache is wiped on every
+ *  syncingAccounts toggle, both directions). No parallel marker map. */
+function isCurrentlySyncing(f) {
+  if (!state.transient.syncingAccounts.has(f.accountId)) return false;
+  return !!folderSyncCache.get(f.folderId)?.syncState;
+}
+
+/** Live progress text for the sync row. Only called when
+ *  `isCurrentlySyncing(f)` is true, so the cache entry is guaranteed
+ *  to exist with `syncState` set. */
+function syncRowText(f) {
+  const acc = state.accounts.find((a) => a.accountId === f.accountId);
+  const provider = acc
+    ? state.providers.find((p) => p.providerId === acc.provider)
+    : null;
+  return syncStateCellText(folderSyncCache.get(f.folderId), provider);
+}
+
+/** Up to two stacked entries for the message row: an informational
+ *  "Local modifications" line when the folder is holding edits for the
+ *  server, and the highest-priority post-sync outcome (error /
+ *  warning / aborted) when applicable. Returns an empty array while
+ *  the account is mid-sync (the sync-progress sub-row owns the cell)
+ *  or when there's nothing to show. */
+function row2Messages(f) {
+  // While the account is mid-run the sync-progress sub-row owns the cell -
+  // any prior message is either stale (about to be replaced by a fresh
+  // outcome) or an indicator the user can't act on yet. Same per-account
+  // guard `folderResultStatus` uses to suppress the needs-sync icon.
+  if (state.transient.syncingAccounts.has(f.accountId)) return [];
+  const out = [];
+  if (hasLocalChanges(f)) {
+    out.push({
+      text: i18n("folder.status.modified", "Local modifications"),
+      severity: "info",
+    });
+  }
+  if (f.status === "error" && f.error) {
+    out.push({ text: messageText(f.error), severity: "error" });
+  } else if (f.status === "warning" && f.warning) {
+    out.push({ text: messageText(f.warning), severity: "warning" });
+  } else if (f.status === "aborted") {
+    out.push({
+      text: i18n("account.status.aborted", "Synchronization aborted"),
+      severity: "aborted",
+    });
+  }
+  return out;
+}
+
+/**
+ * Derive the UI-facing state of an account. Priority, top to bottom:
+ *   1. Provider inactive → "provider-unavailable" (locked).
+ *   2. Auth broken → "needs-reauth".
+ *   3. Sync in progress → "syncing" (locked).
+ *   4. UI RPC in flight → "busy" (locked).
+ *   5. User-disabled → "disabled".
+ *   6. Else aggregate over the account + its selected folders' error /
+ *      warning / lastSyncTime.
+ */
+function effectiveAccountState(acc) {
+  const provider = state.providers.find((p) => p.providerId === acc.provider);
+  const providerActive = provider?.state === "active";
+  if (!providerActive)
+    return { status: "provider-unavailable", interactive: false };
+  // Provider has declared this account locked for one-time upgrade work.
+  // Highest priority because no other action can run while it's set.
+  if (state.transient.upgradeAccounts.has(acc.accountId))
+    return { status: "upgrading", interactive: false };
+  // Registered but not finished being prepared. Same treatment, different
+  // words: nothing has gone wrong and nothing needs doing, the account is
+  // simply not ready yet.
+  if (state.transient.settingUpAccounts.has(acc.accountId))
+    return { status: "setting-up", interactive: false };
+  // Housekeeping the provider asked for no permission to do. Same
+  // treatment as the two above: nothing is wrong, nothing needs doing, and
+  // acting on the account now would collide with it.
+  if (state.transient.maintainingAccounts.has(acc.accountId))
+    return { status: "maintaining", interactive: false };
+  if (state.transient.syncingAccounts.has(acc.accountId))
+    return { status: "syncing", interactive: false };
+  // Transient-busy locks interactive UI (buttons) while a UI-initiated RPC
+  // is in flight, but the *display* stays at the underlying status - no
+  // icon flash in the sidebar, no "Working…" flash in the Status section.
+  const interactive = !state.transient.busyAccounts.has(acc.accountId);
+  if (acc.error === "E:AUTH") return { status: "needs-reauth", interactive };
+  if (!acc.enabled) return { status: "disabled", interactive };
+  // After `disabled`, deliberately: disconnecting is the remedy this state
+  // asks for, and an account that has taken it should read as off rather
+  // than keep naming a condition it no longer has.
+  if (acc.legacyImported) {
+    // Two ways out, and the status names the one on offer. Something was
+    // kept for this account, or nothing was; the first has to be dealt with
+    // before the account can be taken apart, the second is the remedy this
+    // state has always asked for.
+    return {
+      status: acc.legacyHeld ? "legacy-migrate" : "legacy-locked",
+      interactive,
+    };
+  }
+  return { status: deriveAccountResultStatus(acc), interactive };
+}
+
+// Single-slot Status section content. Transient/terminal labels always win
+// (they describe what the UI is doing *now*). Otherwise prefer the account's
+// own error/warning text; fall back to the severity label when only a folder
+// carries the condition (acc.error/warning empty).
+function statusSlot(acc, eff) {
+  const labelStates = new Set([
+    "syncing",
+    "busy",
+    "provider-unavailable",
+    "disabled",
+    "success",
+    "notsyncronized",
+    "needs-sync",
+    "upgrading",
+    "setting-up",
+    "legacy-locked",
+    "legacy-migrate",
+  ]);
+  if (labelStates.has(eff.status)) {
+    return {
+      severity: null,
+      text: i18n(`account.status.${eff.status}`, eff.status),
+    };
+  }
+  if (acc.error) {
+    return { severity: "error", text: messageText(acc.error) };
+  }
+  return {
+    severity: null,
+    text: i18n(`account.status.${eff.status}`, eff.status),
+  };
+}
+
+/**
+ * Single source of truth for which account-level actions are currently
+ * available. Buttons in the detail pane and items in the sidebar context
+ * menu both read from this so the two stay aligned.
+ *
+ * Removal is special-cased: it stays available for accounts whose provider
+ * is missing (uninstalled / not active), because the host can forget the
+ * record locally without the provider's cleanup hook. All other actions
+ * require an active provider port.
+ */
+function accountActions(acc) {
+  const provider = state.providers.find((p) => p.providerId === acc.provider);
+  const providerActive = provider?.state === "active";
+  const upgrading = state.transient.upgradeAccounts.has(acc.accountId);
+  // Being prepared after registration. Locked like an upgrade and not like
+  // a teardown: nothing about the account is settled yet, so connecting or
+  // editing it is as premature as syncing it.
+  const settingUp = state.transient.settingUpAccounts.has(acc.accountId);
+  const syncing = state.transient.syncingAccounts.has(acc.accountId);
+  const busy = state.transient.busyAccounts.has(acc.accountId);
+  // Deliberately not folded into `transientLocked` below: that gates five
+  // other affordances, and whether a teardown should refuse all of them is
+  // a separate question from whether Sync would do anything.
+  const cancelling = state.transient.cancellingAccounts.has(acc.accountId);
+  const transientLocked = upgrading || settingUp || syncing || busy;
+  const isReauth = acc.error === "E:AUTH";
+  const reauthOpen = state.reauthsOpen.has(acc.accountId);
+  const configOpen = state.configsOpen.has(acc.accountId);
+
+  // The last-resort exit refuses nothing: not a running sync (the host
+  // aborts it), not an upgrade, not a dead provider. The host deletes the
+  // account's resources itself, so there is no state in which removal
+  // cannot finish - which is the whole point of having a last resort.
+  const canRemove = true;
+
+  const baseEnabled = providerActive && !transientLocked;
+
+  return {
+    canRemove,
+    // Mirrors what `syncAccount` refuses on. `legacyImported` and a running
+    // teardown both hold syncing back the same way a rejected credential
+    // does, and the host refuses all three silently, so offering the button
+    // would only produce a click with no effect and no explanation.
+    canSync:
+      baseEnabled &&
+      !!acc.enabled &&
+      !isReauth &&
+      !acc.legacyImported &&
+      !cancelling,
+    // Connecting and disconnecting stay available while authentication is
+    // outstanding - only syncing is held back. The account is left connected
+    // now, so Disconnect is the way to put it aside without deleting it, and
+    // disabling clears the error.
+    canConnect: baseEnabled && !acc.enabled,
+    // Disconnect ignores the transient locks - a sync that will not end,
+    // an upgrade, a busy RPC are the states where the user needs it most;
+    // the host aborts the sync and deletes the resources itself. It does
+    // require the provider to be present: disconnect is a configuration
+    // change the provider participates in (stop, clean its state), and
+    // offering it for a provider that cannot hear it reads as wrong. With
+    // the provider gone the exit is Remove, which refuses nothing.
+    //
+    // It does not ignore one thing: while an account still holds what a
+    // previous version never sent, disconnecting destroys it - the teardown
+    // deletes the local calendars and address books, and no server can give
+    // that back. One flag says so, and this does not ask why it is set.
+    // Remove stays available either way.
+    canDisconnect:
+      providerActive && !!acc.enabled && !acc.legacyReplayPending,
+    // The migration rebuilds every resource from the server and then puts
+    // the rescued changes back, so it needs the provider present and the
+    // account settled - and something to put back.
+    canMigrate:
+      baseEnabled && !!acc.enabled && !!acc.legacyHeld && !!acc.legacyImported,
+    // Re-clicks while the popup is open should focus it, even if the
+    // account is currently transient-busy from the popup's own RPC.
+    canReauth: providerActive && isReauth && (!transientLocked || reauthOpen),
+    canEditSettings: providerActive && (!transientLocked || configOpen),
+    // Settings kept on the server, so a connection is the condition for
+    // reaching them - the inverse of everything in the config popup, which
+    // is locked *while* connected. Offered only to a provider that says it
+    // has any: the button is the host's, what is behind it is not.
+    canOpenServices:
+      providerActive &&
+      !!acc.enabled &&
+      !!provider?.capabilities?.hasServicesPopup &&
+      (!transientLocked || configOpen),
+    // Whether the provider has any services at all, which decides if the
+    // button exists rather than whether it is usable right now.
+    hasServices: !!provider?.capabilities?.hasServicesPopup,
+    canChangeAutosync: baseEnabled && !!acc.enabled,
+    // Both the selection checkbox and the ACL dropdown. An account set up
+    // by an older version is frozen until it is dealt with: deselecting a
+    // resource deletes the local copy, which on such an account holds
+    // everything that version never sent.
+    canEditFolders: baseEnabled && !!acc.enabled && !acc.legacyImported,
+  };
+}
+
+function deriveAccountResultStatus(acc) {
+  const folderList = state.folders.get(acc.accountId) ?? [];
+  const selected = folderList.filter((f) => f.selected);
+  if (acc.error || selected.some((f) => f.error)) return "error";
+  // Via the shared accessor, which is also what the toolbar badge asks -
+  // the row and the badge answer "does this account warn?" the same way.
+  if (folderList.some(hasWarning)) return "warning";
+  // Local edits made since the last sync - at least one folder reports a
+  // non-zero `localChanges`. Computed host-side and surfaced via
+  // `acc.needsSync` so the sidebar shows the right icon for every
+  // account, not just the selected one.
+  if (acc.needsSync) return "needs-sync";
+  if (selected.length === 0) return "notsyncronized";
+  if (selected.some((f) => !f.lastSyncTime)) return "notsyncronized";
+  return "success";
+}
+
+function emptyRow(colSpan, text) {
+  const row = cloneTpl("tpl-empty-row");
+  const td = row.firstElementChild;
+  td.colSpan = colSpan;
+  td.textContent = text;
+  return row;
+}
+
+function renderSidebar() {
+  const accBody = document.getElementById("account-list-body");
+  if (!state.accounts.length) {
+    accBody.replaceChildren(
+      emptyRow(3, i18n("manager.noAccounts", "No accounts yet.")),
+    );
+  } else {
+    const rows = state.accounts.map((a) => {
+      const eff = effectiveAccountState(a);
+      const row = cloneTpl("tpl-account-row");
+      row.dataset.accountId = a.accountId;
+      if (a.accountId === state.selectedAccountId)
+        row.classList.add("selected");
+      if (!a.enabled) row.classList.add("disabled");
+
+      row
+        .querySelector(".col-provider-icon")
+        .appendChild(makeImg({ src: accountIconUrl(a, state.providers) }));
+      row.querySelector(".col-account-name").textContent = a.accountName;
+      row.querySelector(".col-status").appendChild(statusIconEl(eff.status));
+      return row;
+    });
+    accBody.replaceChildren(...rows);
+    // Click is delegated on the table once at boot - see init block below.
+  }
+
+  const provBody = document.getElementById("provider-list-body");
+  if (!state.providers.length) {
+    provBody.replaceChildren(
+      emptyRow(3, browser.i18n.getMessage("manager.noProviders")),
+    );
+  } else {
+    const rows = state.providers.map((p) => {
+      const canAdd =
+        !state.setupsInFlight.has(p.providerId) &&
+        p.state === "active" &&
+        p.capabilities?.folderTypes?.length;
+      // A fundraiser row is tested before the installable one, because it
+      // also satisfies "not active and carries a url" - and offering to
+      // install something that does not exist yet is the one thing this
+      // row must never do.
+      const isFundraiser = p.kind === "fundraiser" && p.state !== "active";
+      // Installable means the provider isn't installed yet, not "addable
+      // is unavailable for any reason" - otherwise an active provider's
+      // plus icon would morph into the install arrow while setup is in
+      // flight.
+      const canInstall =
+        !isFundraiser && p.state !== "active" && !!p.installUrl;
+      // An installed provider we refused reads as "not installed" without
+      // this - the one thing the row must not tell someone who is running
+      // it. The download stays: replacing the add-on is the remedy. The
+      // version goes on the name, so the two lines read as "what you have"
+      // over "why it will not do".
+      const incompatible = !!p.incompatibleVersion;
+      const stateLabel = incompatible
+        ? i18n(
+            "provider.state.incompatible",
+            `Incompatible with TbSync v${HOST_VERSION}`,
+            [HOST_VERSION],
+          )
+        : i18n(`provider.state.${p.state}`, p.state);
+
+      const row = cloneTpl("tpl-provider-row");
+      row.classList.add(
+        p.state,
+        canAdd
+          ? "addable"
+          : isFundraiser
+            ? "fundraiser"
+            : canInstall
+              ? "installable"
+              : "not-addable",
+      );
+      // data-provider-id is what the click handler selects on, so a row
+      // without it is not clickable at all, whatever else it carries.
+      // Active providers always have it - addable ones launch a new setup,
+      // not-addable ones (set-up-in-flight) ask the provider to focus its
+      // popup. Inactive rows get it when there is somewhere to send the
+      // click: an install listing, or a fundraiser campaign.
+      if (canAdd || canInstall || isFundraiser || p.state === "active")
+        row.dataset.providerId = p.providerId;
+      // Both link kinds travel in the same dataset field; where they open
+      // differs, so the row says which - same `data-link-target` vocabulary
+      // the routed anchors use. A donation page is an external site with a
+      // payment flow and belongs in the user's own browser; an add-on
+      // listing belongs in a Thunderbird tab, because installing from it
+      // only works there.
+      if (canInstall || isFundraiser) row.dataset.installUrl = p.installUrl;
+      if (isFundraiser) row.dataset.linkTarget = "browser";
+      row.title = canAdd
+        ? i18n("manager.addAccount", "Add account")
+        : isFundraiser
+          ? i18n(
+              "manager.provider.fundraiser",
+              "Visit fundraiser campaign for this provider",
+            )
+          : canInstall
+            ? isBetaBuild()
+              ? i18n(
+                  "manager.provider.installBeta",
+                  "Install the beta from GitHub",
+                )
+              : i18n(
+                  "manager.provider.install",
+                  "Install from addons.thunderbird.net",
+                )
+            : p.state === "active"
+              ? i18n(
+                  "manager.provider.focusSetup",
+                  "Bring the setup window to the front",
+                )
+              : "";
+
+      row
+        .querySelector(".col-provider-icon")
+        .appendChild(
+          makeImg({ src: providerIconUrl(p.providerId, state.providers) }),
+        );
+      row.querySelector(".name").textContent = incompatible
+        ? `${p.providerName} v${p.incompatibleVersion}`
+        : p.providerName;
+      row.querySelector(".sub").textContent = stateLabel;
+      row
+        .querySelector(".col-status")
+        .appendChild(
+          isFundraiser
+            ? cloneTpl("tpl-fundraise-icon")
+            : canInstall
+              ? cloneTpl("tpl-install-icon")
+              : cloneTpl("tpl-add-icon"),
+        );
+      return row;
+    });
+    provBody.replaceChildren(...rows);
+    // Click delegated on the <table> - see init block below.
+  }
+}
+
+function renderDetail() {
+  const host = document.getElementById("account-detail");
+  const acc = state.accounts.find(
+    (a) => a.accountId === state.selectedAccountId,
+  );
+  if (!acc) {
+    host.hidden = true;
+    host.replaceChildren();
+    return;
+  }
+  host.hidden = false;
+  const eff = effectiveAccountState(acc);
+  const actions = accountActions(acc);
+  const folderList = state.folders.get(acc.accountId) ?? [];
+  const isNeedsReauth = acc.error === "E:AUTH";
+
+  // Primary action button:
+  //   acc.error === E:AUTH  → Authenticate   (authenticateAccount → provider
+  //                                           decides how: a consent window,
+  //                                           or its settings for password
+  //                                           accounts)
+  //   !acc.enabled          → Connect        (setAccountEnabled true)
+  //   acc.enabled           → Disconnect     (setAccountEnabled false)
+  // Enabled-ness for each variant comes from `actions` so the context menu
+  // and these buttons stay in lockstep.
+  let primaryLabel, primaryAction, primaryEnabled;
+  if (isNeedsReauth) {
+    primaryLabel = i18n("manager.account.authenticate", "Authenticate");
+    primaryAction = "reauth";
+    primaryEnabled = actions.canReauth;
+  } else if (acc.enabled) {
+    primaryLabel = i18n("manager.account.disconnect", "Disconnect");
+    primaryAction = "disconnect";
+    primaryEnabled = actions.canDisconnect;
+  } else {
+    primaryLabel = i18n("manager.account.connect", "Connect");
+    primaryAction = "connect";
+    primaryEnabled = actions.canConnect;
+  }
+
+  const status = statusSlot(acc, eff);
+
+  const frag = cloneTplFragment("tpl-detail");
+  localizeSubtree(frag);
+
+  frag.querySelector(".val-provider").textContent = providerLabel(acc.provider);
+  frag.querySelector(".val-last-sync").textContent = acc.lastSyncTime
+    ? new Date(acc.lastSyncTime).toLocaleString()
+    : "-";
+
+  // Offered only while something is being held for the account, which is
+  // also the only time the disconnect above is refused - so the pane never
+  // shows two dead buttons and no way forward.
+  const btnMigrate = frag.querySelector("#btn-migrate");
+  btnMigrate.hidden = !acc.legacyHeld;
+  btnMigrate.textContent = i18n("manager.account.migrate", "Migrate…");
+  btnMigrate.disabled = !actions.canMigrate;
+  btnMigrate.addEventListener("click", () => {
+    rpc("openMigrationDialog", { accountId: acc.accountId }).catch(showError);
+  });
+
+  const btnPrimary = frag.querySelector("#btn-primary");
+  btnPrimary.textContent = primaryLabel;
+  btnPrimary.dataset.action = primaryAction;
+  btnPrimary.disabled = !primaryEnabled;
+  // While the account has to be migrated, Disconnect is refused for as long
+  // as that lasts - so it is taken away rather than shown dead. A button
+  // that can never be pressed says nothing the note above has not already
+  // said, and invites the reader to work out what they did wrong. Migrate
+  // takes its place; the two are never both absent, because whatever holds
+  // the disconnect is exactly what puts the other one there.
+  //
+  // Only Disconnect. Connect and Authenticate mean something in states this
+  // does not cover, and hiding either would leave the pane with no action
+  // at all.
+  if (!btnMigrate.hidden && primaryAction === "disconnect") {
+    btnPrimary.hidden = true;
+  }
+  btnPrimary.addEventListener("click", () => {
+    if (primaryAction === "reauth" && state.reauthsOpen.has(acc.accountId)) {
+      rpc("focusAccountPopup", { accountId: acc.accountId }).catch((err) =>
+        console.debug("[tbsync] manager: focusAccountPopup failed:", err),
+      );
+      return;
+    }
+    if (primaryAction === "connect") {
+      markBusyLocally();
+      rpc("setAccountEnabled", {
+        accountId: acc.accountId,
+        enabled: true,
+      }).catch(showError);
+    } else if (primaryAction === "disconnect") {
+      markBusyLocally();
+      rpc("setAccountEnabled", {
+        accountId: acc.accountId,
+        enabled: false,
+      }).catch(showError);
+    } else if (primaryAction === "reauth") {
+      state.reauthsOpen.add(acc.accountId);
+      markBusyLocally();
+      rpc("authenticateAccount", { accountId: acc.accountId })
+        .catch(showError)
+        .finally(() => state.reauthsOpen.delete(acc.accountId));
+    }
+  });
+
+  const btnSettings = frag.querySelector("#btn-settings");
+  btnSettings.disabled = !actions.canEditSettings;
+  btnSettings.addEventListener("click", () => {
+    if (state.configsOpen.has(acc.accountId)) {
+      rpc("focusAccountPopup", { accountId: acc.accountId }).catch((err) =>
+        console.debug("[tbsync] manager: focusAccountPopup failed:", err),
+      );
+      return;
+    }
+    state.configsOpen.add(acc.accountId);
+    markBusyLocally();
+    rpc("editAccount", { accountId: acc.accountId })
+      .catch(showError)
+      .finally(() => state.configsOpen.delete(acc.accountId));
+  });
+
+  const btnServices = frag.querySelector("#btn-services");
+  // Hidden rather than disabled for a provider that has none: a control
+  // that can never do anything is noise, while one that is merely
+  // unreachable right now is information.
+  btnServices.hidden = !actions.hasServices;
+  btnServices.disabled = !actions.canOpenServices;
+  btnServices.addEventListener("click", () => {
+    if (state.configsOpen.has(acc.accountId)) {
+      rpc("focusAccountPopup", { accountId: acc.accountId }).catch((err) =>
+        console.debug("[tbsync] manager: focusAccountPopup failed:", err),
+      );
+      return;
+    }
+    state.configsOpen.add(acc.accountId);
+    markBusyLocally();
+    rpc("openServices", { accountId: acc.accountId })
+      .catch(showError)
+      .finally(() => state.configsOpen.delete(acc.accountId));
+  });
+
+  const btnRemove = frag.querySelector("#btn-remove");
+  btnRemove.disabled = !actions.canRemove;
+  btnRemove.addEventListener("click", () => {
+    confirmAndDeleteAccount(acc.accountId, markBusyLocally);
+  });
+
+  const statusText = frag.querySelector(".status-text");
+  statusText.textContent = status.text;
+  if (status.severity) statusText.classList.add(status.severity);
+
+  // The account cannot sync, so the note carries the whole explanation:
+  // why nothing is happening, and which of the two ways out this account
+  // has. Said here because this is where someone looks when an account
+  // sits still, which a release note read months ago is not.
+  if (acc.legacyImported) {
+    const note = frag.querySelector(".migrated-note");
+    note.hidden = false;
+    // With something kept, the account has to be migrated and the button
+    // below offers it. With nothing kept, the old remedy is the way out and
+    // says nothing about losing anything: we have looked, and there was
+    // nothing to lose.
+    note.textContent = acc.legacyHeld
+      ? i18n(
+          "manager.account.migrated.held",
+          `This account was set up by an older version and cannot sync. ` +
+            `${acc.legacyHeld} local-only changes have been rescued, so it ` +
+            `has to be migrated before it can be used again.`,
+          [String(acc.legacyHeld)],
+        )
+      : i18n(
+          "manager.account.migrated",
+          "This account was set up by an older version and cannot sync. " +
+            "Disconnect and reconnect it to rebuild it from the server.",
+        );
+  }
+
+  // A provider-set autosync pause (`noAutosyncUntil`), told beside the
+  // status rather than in its slot, so an error, a transient state and
+  // the pause stay visible at once. Worded as an event with its deadline
+  // - "the server asked to pause ... until 14:32" - which is true
+  // whenever it is read, before the deadline and after; no timer has to
+  // retract it. Shown only where autosync actually runs: on a disabled
+  // account, a migration-locked one (the v4 import carries the timestamp
+  // over), or one with no interval, a pause gates nothing - and on the
+  // accounts it does gate, the resuming autosync re-renders this pane
+  // and the lapsed note leaves with it.
+  const pausedUntil = Number(acc.noAutosyncUntil ?? 0);
+  const autosyncOn =
+    acc.enabled &&
+    !acc.legacyImported &&
+    (acc.autoSyncIntervalMinutes ?? 0) > 0;
+  if (autosyncOn && pausedUntil > Date.now()) {
+    const note = frag.querySelector(".autosync-paused-note");
+    note.hidden = false;
+    // The field is unbounded, and a bare clock time names a moment today
+    // - so a deadline on another day carries its date.
+    const when = new Date(pausedUntil);
+    const sameDay = when.toDateString() === new Date().toDateString();
+    const time = sameDay
+      ? when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      : when.toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+    note.textContent = i18n(
+      "manager.account.autosyncPaused",
+      `The server asked to pause automatic synchronization until ${time}. A manual sync works at any time.`,
+      [time],
+    );
+  }
+
+  if (acc.enabled) {
+    const resources = frag.querySelector(".resources-section");
+    resources.hidden = false;
+    // Resource table is always rendered when the account is connected;
+    // an empty resource list shows a single placeholder row instead of
+    // hiding the table.
+    frag.querySelector(".folder-table-wrap").hidden = false;
+    const table = frag.querySelector(".folder-table");
+    const visibleFolders = folderList.filter((f) => !f.hidden);
+    if (visibleFolders.length) {
+      for (const f of visibleFolders) {
+        const isBusy = state.transient.busyFolders.has(f.folderId);
+        const folderLock = isBusy || !actions.canEditFolders;
+        const tbody = cloneTpl("tpl-folder-group");
+        if (!f.selected) tbody.classList.add("unselected");
+        const row = tbody.querySelector("tr.folder-main");
+
+        const cb = row.querySelector("input[type=checkbox]");
+        cb.dataset.folderId = f.folderId;
+        cb.checked = !!f.selected;
+        cb.disabled = folderLock;
+        cb.addEventListener("change", () => {
+          rpc("setFolderSelected", {
+            accountId: acc.accountId,
+            folderId: f.folderId,
+            selected: cb.checked,
+          }).catch(showError);
+        });
+
+        const typeIcon = folderTypeIconEl(f.targetType);
+        if (typeIcon) row.querySelector(".col-type-icon").appendChild(typeIcon);
+        row.querySelector(".col-acl").appendChild(
+          aclSelectEl(f, {
+            disabled: folderLock,
+            onChange: (downloadOnly) => {
+              rpc("setFolderDownloadOnly", {
+                accountId: acc.accountId,
+                folderId: f.folderId,
+                downloadOnly,
+              }).catch(showError);
+            },
+          }),
+        );
+        row.querySelector(".col-name").textContent = f.displayName;
+        const iconStatus = folderResultStatus(f);
+        if (iconStatus) {
+          row
+            .querySelector(".col-status-icon")
+            .appendChild(statusIconEl(iconStatus));
+        }
+        row.querySelector(".col-status").textContent = row1StatusText(f);
+
+        if (isCurrentlySyncing(f)) {
+          const syncRow = cloneTpl("tpl-folder-sync-row");
+          syncRow.querySelector(".col-sync-status").textContent =
+            syncRowText(f);
+          tbody.appendChild(syncRow);
+        }
+
+        const messages = row2Messages(f);
+        if (messages.length) {
+          const msgRow = cloneTpl("tpl-folder-message-row");
+          const cell = msgRow.querySelector(".col-message");
+          for (const m of messages) {
+            const line = document.createElement("div");
+            line.className = `folder-message ${m.severity}`;
+            line.textContent = m.text;
+            cell.appendChild(line);
+          }
+          tbody.appendChild(msgRow);
+        }
+
+        table.appendChild(tbody);
+      }
+    } else {
+      const emptyTbody = cloneTpl("tpl-folder-empty");
+      emptyTbody.querySelector("td").textContent = i18n(
+        "manager.resources.empty",
+        "No resources yet.",
+      );
+      table.appendChild(emptyTbody);
+    }
+
+    // Footer (auto-sync interval + Sync button) is always shown for
+    // enabled accounts. The Sync button doesn't require a selected
+    // folder up-front - the sync itself can populate / refresh the
+    // resource list.
+    frag.querySelector(".resources-footer").hidden = false;
+
+    const autosync = frag.querySelector("#autosync-minutes");
+    autosync.value = String(acc.autoSyncIntervalMinutes ?? 0);
+    autosync.title = i18n(
+      "manager.account.autosync.tooltip",
+      "0 disables auto-sync",
+    );
+    autosync.disabled = !actions.canChangeAutosync;
+    autosync.addEventListener("change", (e) => {
+      const minutes = Math.max(0, parseInt(e.currentTarget.value, 10) || 0);
+      e.currentTarget.value = String(minutes);
+      rpc("setAutoSyncInterval", { accountId: acc.accountId, minutes }).catch(
+        showError,
+      );
+    });
+
+    const btnSync = frag.querySelector("#btn-sync");
+    btnSync.disabled = !actions.canSync;
+    btnSync.addEventListener("click", () => {
+      rpc("syncAccount", { accountId: acc.accountId }).catch(showError);
+    });
+  }
+
+  host.replaceChildren(frag);
+
+  // Optimistic busy flip so the UI locks the buttons immediately on click,
+  // without waiting for the host's accounts-changed round trip. The next
+  // broadcast will either keep the busy state (host took it) or clear it
+  // (RPC settled). We don't track the flip locally.
+  function markBusyLocally() {
+    state.transient.busyAccounts.add(acc.accountId);
+    renderSidebar();
+    renderDetail();
+  }
+}
+
+/** Render the transient status-cell text for a folder from the cached
+ *  entry + the owning provider's meta. See the contract in protocol.mjs. */
+function syncStateCellText(entry, provider) {
+  let text;
+  if (entry.label) {
+    text = entry.label;
+  } else {
+    const dot = entry.syncState.indexOf(".");
+    const head = dot === -1 ? entry.syncState : entry.syncState.slice(0, dot);
+    const tail = dot === -1 ? "" : entry.syncState.slice(dot + 1);
+    const localised = browser.i18n.getMessage("syncstate." + head);
+    if (localised && SYNCSTATE_BASE_KEYS.has(head)) {
+      text = tail ? `${localised} (${tail})` : localised;
+    } else {
+      text = entry.syncState;
+    }
+  }
+
+  if (typeof entry.itemsTotal === "number") {
+    text += ` (${entry.itemsDone ?? 0}/${entry.itemsTotal})`;
+  }
+
+  const prefix = entry.syncState.split(".")[0];
+  const timeoutMs = provider?.capabilities?.connectionTimeoutMs;
+  if (prefix === "send" && timeoutMs) {
+    const elapsed = Date.now() - (entry.startedAt ?? Date.now());
+    if (elapsed > 2000) {
+      const remainingSec = Math.max(
+        0,
+        Math.round((timeoutMs - elapsed) / 1000),
+      );
+      text += ` (${remainingSec}s)`;
+    }
+  }
+  return text;
+}
+
+function stopCountdownTimer(folderId) {
+  const handle = countdownTimers.get(folderId);
+  if (handle !== undefined) {
+    clearInterval(handle);
+    countdownTimers.delete(folderId);
+  }
+}
+
+function ensureCountdownTimer(folderId, provider) {
+  if (countdownTimers.has(folderId)) return;
+  if (!provider?.capabilities?.connectionTimeoutMs) return;
+  const handle = setInterval(() => {
+    const entry = folderSyncCache.get(folderId);
+    if (!entry || entry.syncState.split(".")[0] !== "send") {
+      stopCountdownTimer(folderId);
+      return;
+    }
+    renderDetail();
+  }, 1000);
+  countdownTimers.set(folderId, handle);
+}
+
+// A folder sync is "done" once the account has left the syncing set - any
+// trailing notifications that arrive after folders-changed must not
+// resurrect a "Synchronizing…" label.
+function updateInlineSyncState({ type, accountId, folderId, payload }) {
+  if (!folderId) return;
+  if (!state.transient.syncingAccounts.has(accountId)) {
+    folderSyncCache.delete(folderId);
+    stopCountdownTimer(folderId);
+    return;
+  }
+  const acc = state.accounts.find((a) => a.accountId === accountId);
+  const provider = acc
+    ? state.providers.find((p) => p.providerId === acc.provider)
+    : null;
+
+  const prior = folderSyncCache.get(folderId) ?? {};
+  const entry = { ...prior };
+
+  if (type === PROVIDER_NOTIFY.REPORT_SYNC_STATE && payload?.syncState) {
+    const changed = prior.syncState !== payload.syncState;
+    entry.syncState = payload.syncState;
+    entry.label = payload.label ?? null;
+    if (changed) entry.startedAt = Date.now();
+  } else if (type === PROVIDER_NOTIFY.REPORT_PROGRESS) {
+    entry.itemsDone = payload?.itemsDone;
+    entry.itemsTotal = payload?.itemsTotal;
+  } else {
+    return;
+  }
+
+  folderSyncCache.set(folderId, entry);
+
+  if (accountId === state.selectedAccountId && entry.syncState) {
+    renderDetail();
+  }
+
+  const prefix = entry.syncState?.split(".")[0];
+  if (prefix === "send") {
+    ensureCountdownTimer(folderId, provider);
+  } else {
+    stopCountdownTimer(folderId);
+  }
+}
+
+/** Drop cached sync-state entries for all folders of an account (and stop
+ *  their countdown timers). Call on `folders-changed` so the next render
+ *  falls back to the derived folder cell (based on error, warning and
+ *  lastSyncTime). */
+function clearFolderSyncCacheForAccount(accountId) {
+  const folderIds = (state.folders.get(accountId) ?? []).map((f) => f.folderId);
+  for (const id of folderIds) {
+    folderSyncCache.delete(id);
+    stopCountdownTimer(id);
+  }
+}
+
+// ── Event log ─────────────────────────────────────────────────────────────
+
+function renderEventLog() {
+  const body = document.getElementById("event-log-rows");
+  if (!body) return;
+  // Newest first: walk the chronological state array in reverse.
+  const rows = [];
+  for (let i = state.eventLog.length - 1; i >= 0; i--) {
+    rows.push(eventLogRow(state.eventLog[i]));
+  }
+  body.replaceChildren(...rows);
+  updateEventLogEmptyState();
+}
+
+function appendEventLogEntry(entry) {
+  state.eventLog.push(entry);
+  if (state.eventLog.length > EVENT_LOG_DISPLAY_MAX) {
+    state.eventLog.splice(0, state.eventLog.length - EVENT_LOG_DISPLAY_MAX);
+  }
+  const body = document.getElementById("event-log-rows");
+  if (body) {
+    body.prepend(eventLogRow(entry));
+    while (body.rows.length > EVENT_LOG_DISPLAY_MAX)
+      body.deleteRow(body.rows.length - 1);
+  }
+  updateEventLogEmptyState();
+}
+
+function formatDetails(details) {
+  if (typeof details === "string") return details;
+  try {
+    return JSON.stringify(details, null, 2);
+  } catch {
+    return String(details);
+  }
+}
+
+/** An entry's account or resource, as `id (name)`.
+ *
+ *  The id leads because it is what the entry actually carries and what a
+ *  bug report has to be diagnosed against; the name is a convenience that
+ *  may be missing - a folder whose target was torn down, or an account
+ *  removed while its entries are still in the session log - and is simply
+ *  left off then. Entries that are about neither render as empty. */
+function idWithName(id, name) {
+  if (!id) return "";
+  return name ? `${id} (${name})` : String(id);
+}
+
+/** The folder an entry names, or null. `folderId` is unique per account, so
+ *  the account's list is searched first; entries that carry a folder but no
+ *  account (none today, but the protocol permits it) fall back to a scan. */
+function eventLogFolder(entry) {
+  if (!entry.folderId) return null;
+  const lists = entry.accountId
+    ? [state.folders.get(entry.accountId) ?? []]
+    : [...state.folders.values()];
+  for (const list of lists) {
+    const hit = list.find((f) => f.folderId === entry.folderId);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+/** Fill one line of the classification cell, or drop it.
+ *
+ *  A field the entry does not carry gets no line at all rather than a
+ *  dangling label - an account-wide entry has no resource, and saying
+ *  "Resource:" with nothing after it reads as a lookup that failed. */
+function ctxLine(row, cls, label, value) {
+  const el = row.querySelector(`.${cls}`);
+  if (!value) {
+    el.remove();
+    return;
+  }
+  el.textContent = label ? `${label}: ${value}` : value;
+}
+
+function eventLogRow(entry) {
+  const acc = entry.accountId
+    ? state.accounts.find((a) => a.accountId === entry.accountId)
+    : null;
+  const row = cloneTpl("tpl-event-log-row");
+  row.className = entry.level;
+  // One classification cell, one line per field: the ids are long enough
+  // (a folder id plus its name) that a column each wrapped them to
+  // ribbons, and the message needs the width far more than they do.
+  ctxLine(
+    row,
+    "time",
+    "",
+    new Date(entry.timestamp ?? Date.now()).toLocaleString(),
+  );
+  ctxLine(
+    row,
+    "sev",
+    i18n("manager.eventLog.field.level", "Level"),
+    entry.level,
+  );
+  // Reporter = entry's filer. Provider-emitted entries carry `providerId`;
+  // host-emitted entries (e.g. router warnings) don't, so they read as
+  // "TbSync Manager" to match the bug-report component label.
+  ctxLine(
+    row,
+    "src",
+    i18n("manager.eventLog.field.reporter", "Reporter"),
+    entry.providerId ? providerLabel(entry.providerId) : "TbSync Manager",
+  );
+  ctxLine(
+    row,
+    "acct",
+    i18n("manager.eventLog.field.account", "Account"),
+    idWithName(entry.accountId, acc?.accountName),
+  );
+  ctxLine(
+    row,
+    "res",
+    i18n("manager.eventLog.field.resource", "Resource"),
+    idWithName(entry.folderId, eventLogFolder(entry)?.displayName),
+  );
+  row.querySelector(".msg-text").textContent = entry.message ?? "";
+  if (entry.details) {
+    const details = row.querySelector(".details");
+    details.textContent = formatDetails(entry.details);
+    details.hidden = false;
+  }
+  return row;
+}
+
+function updateEventLogEmptyState() {
+  const empty = document.getElementById("event-log-empty");
+  if (!empty) return;
+  empty.classList.toggle("visible", state.eventLog.length === 0);
+}
+
+// ── Interactions ──────────────────────────────────────────────────────────
+
+function selectAccount(accountId) {
+  if (state.selectedAccountId === accountId) return;
+  state.selectedAccountId = accountId;
+  renderSidebar();
+  renderDetail();
+  refreshFolders(accountId);
+}
+
+function providerLabel(providerId) {
+  return (
+    state.providers.find((p) => p.providerId === providerId)?.providerName ??
+    providerId
+  );
+}
+
+// Status → icon filename. Matches the legacy TbSync mapping:
+// success → tick, disabled → disabled, warning → warning, notsyncronized
+// / needs-sync → info (informational state, not active work), syncing →
+// sync (animated), upgrading → spinner (active background work, distinct
+// from sync), everything else → error.
+//
+// The two carried-over states are listed rather than left to the fallback:
+// such an account really is one the user has to act on before it will ever
+// sync, so the error icon is the intended answer and not an accident of an
+// unknown status. The toolbar badge reads the same condition, so the two
+// agree. They differ only in what the user has to do - reconnect it, or
+// migrate it - which the label says and the icon does not need to.
+const STATUS_ICON_FILE = {
+  success: "status-tick16.png",
+  disabled: "status-disabled16.png",
+  warning: "status-warning16.png",
+  notsyncronized: "status-info16.png",
+  "needs-sync": "status-info16.png",
+  syncing: "status-sync16.png",
+  upgrading: "spinner.gif",
+  "setting-up": "spinner.gif",
+  "legacy-locked": "status-error16.png",
+  "legacy-migrate": "status-error16.png",
+};
+
+/** Icon for the Status column. Tooltip carries the localised status label
+ *  for hover + screen-reader users. Unknown / failure-ish statuses fall back
+ *  to the error icon. The `syncing` status gets a `.syncing` class so the
+ *  CSS rotation keyframe kicks in while sync is active. */
+function statusIconEl(status) {
+  const file = STATUS_ICON_FILE[status] ?? "status-error16.png";
+  const label = browser.i18n.getMessage(`account.status.${status}`) || status;
+  return makeImg({
+    src: browser.runtime.getURL(`icons/${file}`),
+    alt: label,
+    title: label,
+    className: status === "syncing" ? "status-icon syncing" : "status-icon",
+  });
+}
+
+function folderTypeIconEl(targetType) {
+  const spec = FOLDER_TYPES[targetType];
+  if (!spec) return null;
+  const label = i18n(spec.labelKey, targetType);
+  return makeImg({
+    src: browser.runtime.getURL(spec.icon),
+    alt: label,
+    title: label,
+    className: "folder-type-icon",
+  });
+}
+
+// Read-only / read-write selector per folder.
+//
+// Two flags decide the rendered state:
+//   - `folder.readOnly`     - server-announced ACL, immutable for the user.
+//   - `folder.downloadOnly` - user override; only meaningful when readOnly
+//                              is false.
+//
+// Closed state:
+//   - server-RO: a static <img> of the read-only icon (tooltip explains).
+//   - otherwise: a small <button> showing the active-state icon + chevron.
+//
+// Open state (button only): a popup <ul role="listbox"> with two
+// <li role="option"> rows, each "icon + text". Strings ported verbatim
+// from legacy TbSync (acl.readonly / acl.readwrite). Click outside or
+// Escape closes the popup.
+function aclSelectEl(folder, { onChange, disabled = false } = {}) {
+  const labelRW = i18n(
+    "folder.acl.option.readWrite",
+    "Read from and write to server",
+  );
+  const labelRO = i18n(
+    "folder.acl.option.downloadOnly",
+    "Read-only server access (revert local changes)",
+  );
+
+  // Server-imposed RO: render as a static icon. No menu, no choice.
+  if (folder.readOnly) {
+    const tip = i18n(
+      "folder.acl.serverReadOnly",
+      "Read-only server access (server-enforced)",
+    );
+    return makeImg({
+      src: browser.runtime.getURL("icons/acl-ro16.png"),
+      alt: tip,
+      title: tip,
+      className: "folder-acl-icon folder-acl-icon-static",
+    });
+  }
+
+  const wrap = document.createElement("div");
+  wrap.className = "folder-acl-dropdown";
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "folder-acl-trigger";
+  trigger.dataset.state = folder.downloadOnly ? "ro" : "rw";
+  trigger.disabled = !!disabled;
+  trigger.title = folder.downloadOnly ? labelRO : labelRW;
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+  trigger.setAttribute("aria-label", folder.downloadOnly ? labelRO : labelRW);
+  // DOM children (not background-image) so no UA hover/active style can
+  // drop the icon, and so flexbox can vertically centre the bits cleanly.
+  const triggerIcon = document.createElement("img");
+  triggerIcon.className = "folder-acl-trigger-icon";
+  triggerIcon.alt = "";
+  triggerIcon.src = browser.runtime.getURL(
+    folder.downloadOnly ? "icons/acl-ro16.png" : "icons/acl-rw16.png",
+  );
+  const triggerSep = document.createElement("span");
+  triggerSep.className = "folder-acl-trigger-sep";
+  triggerSep.setAttribute("aria-hidden", "true");
+  const triggerChevron = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg",
+  );
+  triggerChevron.setAttribute("viewBox", "0 0 8 5");
+  triggerChevron.setAttribute("class", "folder-acl-trigger-chevron");
+  triggerChevron.setAttribute("aria-hidden", "true");
+  const chevronPath = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path",
+  );
+  chevronPath.setAttribute("d", "M0 0h8L4 5z");
+  triggerChevron.appendChild(chevronPath);
+  trigger.append(triggerIcon, triggerSep, triggerChevron);
+
+  const popup = document.createElement("ul");
+  popup.className = "folder-acl-popup";
+  popup.setAttribute("role", "listbox");
+  popup.hidden = true;
+
+  const options = [
+    { value: "rw", label: labelRW, icon: "icons/acl-rw16.png" },
+    { value: "ro", label: labelRO, icon: "icons/acl-ro16.png" },
+  ];
+  for (const opt of options) {
+    const li = document.createElement("li");
+    li.setAttribute("role", "option");
+    li.dataset.value = opt.value;
+    const isSelected = (opt.value === "ro") === !!folder.downloadOnly;
+    li.setAttribute("aria-selected", String(isSelected));
+    if (isSelected) li.classList.add("selected");
+
+    const img = document.createElement("img");
+    img.src = browser.runtime.getURL(opt.icon);
+    img.alt = "";
+    img.className = "folder-acl-option-icon";
+    const span = document.createElement("span");
+    span.textContent = opt.label;
+    li.append(img, span);
+
+    li.addEventListener("click", () => {
+      closePopup();
+      const next = opt.value === "ro";
+      trigger.dataset.state = next ? "ro" : "rw";
+      trigger.title = next ? labelRO : labelRW;
+      trigger.setAttribute("aria-label", next ? labelRO : labelRW);
+      triggerIcon.src = browser.runtime.getURL(
+        next ? "icons/acl-ro16.png" : "icons/acl-rw16.png",
+      );
+      if (onChange) onChange(next);
+    });
+    popup.appendChild(li);
+  }
+
+  function positionPopup() {
+    // `position: fixed`: coordinates are viewport-space. Pin the popup
+    // just below the trigger by default; flip above when there isn't
+    // enough room below. Reveal a measurable layout box first by
+    // un-hiding so getBoundingClientRect() reports real dimensions.
+    const r = trigger.getBoundingClientRect();
+    popup.style.visibility = "hidden";
+    popup.hidden = false;
+    const popH = popup.offsetHeight;
+    const viewportH = window.innerHeight;
+    const spaceBelow = viewportH - r.bottom;
+    const top =
+      spaceBelow < popH + 4 && r.top > popH + 4
+        ? r.top - popH - 2
+        : r.bottom + 2;
+    popup.style.top = top + "px";
+    popup.style.left = r.left + "px";
+    popup.style.visibility = "";
+  }
+  function openPopup() {
+    closeAllAclDropdowns();
+    positionPopup();
+    trigger.setAttribute("aria-expanded", "true");
+    // Defer attaching the dismiss listeners until after the click that
+    // opened us has finished bubbling, otherwise they fire immediately.
+    setTimeout(() => {
+      document.addEventListener("click", outsideClick, true);
+      document.addEventListener("keydown", escClose, true);
+      // Capture-phase scroll so we catch any scroll container, not just
+      // the window. We close rather than reposition - simpler, and the
+      // popup is short-lived enough that drift-on-scroll is rare.
+      document.addEventListener("scroll", scrollClose, true);
+      window.addEventListener("resize", scrollClose);
+    }, 0);
+  }
+  function closePopup() {
+    popup.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    document.removeEventListener("click", outsideClick, true);
+    document.removeEventListener("keydown", escClose, true);
+    document.removeEventListener("scroll", scrollClose, true);
+    window.removeEventListener("resize", scrollClose);
+  }
+  function outsideClick(e) {
+    // The popup is a fixed-positioned sibling of the trigger and still a
+    // DOM descendant of `wrap`, so wrap.contains() covers it.
+    if (!wrap.contains(e.target)) closePopup();
+  }
+  function escClose(e) {
+    if (e.key === "Escape") {
+      closePopup();
+      trigger.focus();
+    }
+  }
+  function scrollClose() {
+    closePopup();
+  }
+  // Expose close for the global "close any other dropdown" handler.
+  wrap._closeAclPopup = closePopup;
+
+  trigger.addEventListener("click", () => {
+    if (popup.hidden) openPopup();
+    else closePopup();
+  });
+
+  wrap.append(trigger, popup);
+  return wrap;
+}
+
+/** Close every other open ACL dropdown in the document. Used to enforce
+ *  single-popup-at-a-time when a new trigger fires. */
+function closeAllAclDropdowns() {
+  for (const el of document.querySelectorAll(".folder-acl-dropdown")) {
+    if (typeof el._closeAclPopup === "function") el._closeAclPopup();
+  }
+}
+
+// ── Modal popover queue ──────────────────────────────────────────────────
+//
+// Both confirm and error popovers share one <dialog> element. Native
+// <dialog>.showModal() throws if the element is already open, so we
+// serialize requests through a FIFO queue: each entry waits for the
+// previous one's `close` event before opening.
+const modalQueue = [];
+let modalBusy = false;
+
+function enqueueModal(opts) {
+  return new Promise((resolve) => {
+    modalQueue.push({ opts, resolve });
+    drainModalQueue();
+  });
+}
+
+function drainModalQueue() {
+  if (modalBusy) return;
+  const entry = modalQueue.shift();
+  if (!entry) return;
+  modalBusy = true;
+
+  const { opts, resolve } = entry;
+  const dlg = document.getElementById("confirm-dialog");
+  dlg.dataset.variant = opts.variant;
+  document.getElementById("confirm-dialog-title").textContent = opts.title;
+  document.getElementById("confirm-dialog-body").textContent = opts.body ?? "";
+  if (opts.variant === "confirm") {
+    document.getElementById("confirm-dialog-confirm").textContent =
+      opts.confirmLabel;
+    document.getElementById("confirm-dialog-cancel").textContent =
+      opts.cancelLabel;
+  } else if (opts.variant === "error") {
+    document.getElementById("confirm-dialog-ok").textContent = opts.okLabel;
+  } else if (opts.variant === "bugreport") {
+    document.getElementById("confirm-dialog-send").textContent = opts.sendLabel;
+    document.getElementById("confirm-dialog-cancel").textContent =
+      opts.cancelLabel;
+    opts.onOpen?.(dlg);
+  }
+  // Escape / backdrop → close event with returnValue === "".
+  dlg.returnValue = "";
+
+  const onClose = () => {
+    dlg.removeEventListener("close", onClose);
+    modalBusy = false;
+    resolve(dlg.returnValue);
+    drainModalQueue();
+  };
+  dlg.addEventListener("close", onClose);
+  dlg.showModal();
+}
+
+/**
+ * Promise-wrapped confirmation dialog backed by the shared modal queue.
+ * Resolves `true` on confirm, `false` on cancel / Escape / backdrop.
+ */
+function confirmDialog({ title, body, confirmLabel, cancelLabel }) {
+  return enqueueModal({
+    variant: "confirm",
+    title,
+    body,
+    confirmLabel,
+    cancelLabel,
+  }).then((v) => v === "confirm");
+}
+
+/** Error popover - single OK button. Resolves when dismissed. */
+function errorDialog({ title, body, okLabel }) {
+  return enqueueModal({ variant: "error", title, body, okLabel });
+}
+
+function showError(err) {
+  console.error(err);
+  errorDialog({
+    title: i18n("manager.error.title", "Error"),
+    body: err?.message ?? String(err),
+    okLabel: i18n("manager.error.dismiss", "OK"),
+  });
+}
+
+// ── Bug report ────────────────────────────────────────────────────────────
+
+const CORE_COMPONENT_ID = "__core__";
+
+/** Populate the component dropdown with "TbSync Manager" + every known
+ *  provider, preselecting the provider of the currently-selected account
+ *  when there is one. */
+function populateBugReportComponents() {
+  const select = document.getElementById("bug-report-component");
+  select.replaceChildren();
+
+  const coreOpt = document.createElement("option");
+  coreOpt.value = CORE_COMPONENT_ID;
+  // Brand-name-like literal - same in every locale, so no i18n key.
+  coreOpt.textContent = "TbSync Manager";
+  select.appendChild(coreOpt);
+
+  for (const p of state.providers) {
+    if (p.state === "uninstalled") continue;
+    const opt = document.createElement("option");
+    opt.value = p.providerId;
+    opt.textContent = p.providerName ?? p.providerId;
+    select.appendChild(opt);
+  }
+
+  // Preselect the provider of the selected account when possible.
+  const selectedAcc = state.accounts.find(
+    (a) => a.accountId === state.selectedAccountId,
+  );
+  if (
+    selectedAcc?.provider &&
+    select.querySelector(`option[value="${CSS.escape(selectedAcc.provider)}"]`)
+  ) {
+    select.value = selectedAcc.provider;
+  } else {
+    select.value = CORE_COMPONENT_ID;
+  }
+}
+
+/** Open the bug-report modal; resolves with the form data on Send,
+ *  or null on Cancel / Escape. */
+function bugReportDialog() {
+  return enqueueModal({
+    variant: "bugreport",
+    title: i18n("bugReport.title", "Create Bug Report"),
+    sendLabel: i18n("bugReport.send", "Send"),
+    cancelLabel: i18n("bugReport.cancel", "Cancel"),
+    onOpen: () => {
+      populateBugReportComponents();
+      document.getElementById("bug-report-summary").value = "";
+      document.getElementById("bug-report-description").value = "";
+      // Defer focus to post-showModal paint so the field is actually focusable.
+      setTimeout(
+        () => document.getElementById("bug-report-summary").focus(),
+        0,
+      );
+    },
+  }).then((returnValue) => {
+    if (returnValue !== "send") return null;
+    return {
+      component: document.getElementById("bug-report-component").value,
+      summary: document.getElementById("bug-report-summary").value.trim(),
+      description: document
+        .getElementById("bug-report-description")
+        .value.trim(),
+    };
+  });
+}
+
+/** Look up the maintainer address for a component. Core has a constant
+ *  address shipped with the host; providers carry their own. */
+function recipientForComponent(componentId) {
+  if (componentId === CORE_COMPONENT_ID) return null; // handled by caller (host constant)
+  return (
+    state.providers.find((p) => p.providerId === componentId)
+      ?.maintainerEmail ?? null
+  );
+}
+
+/** Resolve the component's version string for the report header. */
+async function versionForComponent(componentId) {
+  if (componentId === CORE_COMPONENT_ID)
+    return browser.runtime.getManifest().version;
+  try {
+    const info = await browser.management.get(componentId);
+    return info?.version ?? "";
+  } catch (err) {
+    console.debug(
+      `[tbsync] manager: management.get(${componentId}) failed:`,
+      err,
+    );
+    return "";
+  }
+}
+
+/** Plain-text report header + user description. The event log is
+ *  attached separately (see renderEventLogAttachment). */
+async function buildReportBody({ componentId, description }) {
+  const host = browser.runtime.getManifest().version;
+  const tb = await browser.runtime.getBrowserInfo();
+  const plat = await browser.runtime.getPlatformInfo();
+  const componentVersion = await versionForComponent(componentId);
+  const componentLabel =
+    componentId === CORE_COMPONENT_ID ? "TbSync Manager" : componentId;
+
+  return [
+    `TbSync ${host}`,
+    `Thunderbird ${tb.version} (${tb.name} ${tb.buildID})`,
+    `Platform: ${plat.os} / ${plat.arch}`,
+    `Component: ${componentLabel}${componentVersion ? ` ${componentVersion}` : ""}`,
+    "",
+    "--- User description ---",
+    description || "(none)",
+    "",
+  ].join("\n");
+}
+
+/** Render the session-scoped event log as plain text for the attachment.
+ *  One entry per line, chronological (oldest first).
+ *
+ *  Asks the host for the whole log rather than rendering `state.eventLog`:
+ *  the table holds only the newest EVENT_LOG_DISPLAY_MAX entries, and with
+ *  the limit lifted a report rendered from the view would silently omit
+ *  everything before that - the part the user lifted the limit to keep. */
+async function renderEventLogAttachment() {
+  const { entries } = await rpc("getEventLogAll");
+  const lines = (entries ?? []).map((e) => {
+    const ts = new Date(e.timestamp ?? Date.now()).toISOString();
+    const bits = [ts, `[${e.level}]`];
+    // Source matches the UI's Source column: provider name, or "TbSync
+    // Manager" for host-filed entries.
+    const src = e.providerId
+      ? (state.providers.find((p) => p.providerId === e.providerId)
+          ?.providerName ?? e.providerId)
+      : "TbSync Manager";
+    bits.push(`{${src}}`);
+    // Account and resource, in the UI's `id (name)` form: the id is what
+    // the entry carries and what the report is diagnosed against, so it
+    // must survive even when the account or folder it named is gone. A
+    // resource-less entry - anything account-wide, like an upgrade or a
+    // token refresh - contributes no group at all.
+    if (e.accountId) {
+      const acc = state.accounts.find((a) => a.accountId === e.accountId);
+      bits.push(`(${idWithName(e.accountId, acc?.accountName)})`);
+    }
+    if (e.folderId) {
+      bits.push(`[${idWithName(e.folderId, eventLogFolder(e)?.displayName)}]`);
+    }
+    bits.push(e.message ?? "");
+    let line = bits.join(" ");
+    if (e.details)
+      line += `\n    ${formatDetails(e.details).replace(/\n/g, "\n    ")}`;
+    return line;
+  });
+  return lines.join("\n") + "\n";
+}
+
+async function createBugReport() {
+  const form = await bugReportDialog();
+  if (!form) return;
+  if (!form.summary) {
+    // Summary is required for a meaningful subject; re-surface an error.
+    showError(
+      new Error(
+        i18n("bugReport.error.summaryRequired", "Please enter a summary."),
+      ),
+    );
+    return;
+  }
+
+  const hostVersion = browser.runtime.getManifest().version;
+  const recipient =
+    form.component === CORE_COMPONENT_ID
+      ? await rpc("getCoreMaintainerEmail")
+      : recipientForComponent(form.component);
+
+  const body = await buildReportBody({
+    componentId: form.component,
+    description: form.description,
+  });
+  const logText = await renderEventLogAttachment();
+  const file = new File([logText], "tbsync-eventlog.txt", {
+    type: "text/plain",
+  });
+
+  try {
+    await messenger.compose.beginNew({
+      to: recipient ? [recipient] : [],
+      subject: `TbSync ${hostVersion} bug report: ${form.summary}`,
+      isPlainText: true,
+      plainTextBody: body,
+      attachments: [{ file }],
+    });
+  } catch (err) {
+    showError(err);
+  }
+}
+
+async function confirmAndDeleteAccount(accountId, onConfirmed) {
+  const acc = state.accounts.find((a) => a.accountId === accountId);
+  if (!acc) return;
+  const ok = await confirmDialog({
+    title: i18n("manager.remove.confirmTitle", "Remove account"),
+    body: i18n(
+      "manager.remove.confirmBody",
+      `Remove account “${acc.accountName}”? The Thunderbird address book for this account will also be deleted.`,
+      acc.accountName,
+    ),
+    confirmLabel: i18n("manager.account.remove", "Remove"),
+    cancelLabel: i18n("manager.remove.cancelLabel", "Cancel"),
+  });
+  if (!ok) return;
+  onConfirmed?.();
+  rpc("deleteAccount", { accountId }).catch(showError);
+}
+
+// ── Add-account launcher ──────────────────────────────────────────────────
+
+async function launchSetup(providerId) {
+  // Defensive: class-routing makes the row not-addable while this
+  // provider's setup is open, so the click handler dispatches to
+  // focusSetupPopup instead. This guard catches any path that bypasses
+  // that - e.g. a programmatic call.
+  if (state.setupsInFlight.has(providerId)) return;
+  state.setupsInFlight.add(providerId);
+  renderSidebar();
+  let result = null;
+  try {
+    result = await rpc("addAccount", { providerId });
+  } catch (err) {
+    if (err.code !== "E:CANCELLED") showError(err);
+  } finally {
+    state.setupsInFlight.delete(providerId);
+  }
+  await refreshState();
+  if (result?.accountId) selectAccount(result.accountId);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+
+// Vendored webext-support/i18n substitutes every `data-i18n-content` /
+// `data-i18n-<attr>` / `__MSG_*__` site in the static document so nothing
+// flashes English-then-translated.
+localizeDocument();
+
+// Tab switching - one listener on the tab bar.
+document.querySelector(".tab-bar").addEventListener("click", (e) => {
+  const btn = e.target.closest(".tab-button");
+  if (!btn) return;
+  selectTab(btn.dataset.tab);
+});
+
+function selectTab(tabName) {
+  for (const btn of document.querySelectorAll(".tab-button")) {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  }
+  for (const panel of document.querySelectorAll(".tab-panel")) {
+    panel.toggleAttribute("hidden", panel.dataset.panel !== tabName);
+  }
+}
+
+document.getElementById("event-log-clear").addEventListener("click", () => {
+  rpc("clearEventLog").catch(showError);
+});
+
+document
+  .getElementById("event-log-verbosity")
+  .addEventListener("change", (e) => {
+    const level = Number(e.currentTarget.value);
+    rpc("setLogLevel", { level }).catch(showError);
+  });
+
+/** Put both Log options selects back in step with stored settings. */
+function syncLogOptions() {
+  const verbosity = document.getElementById("event-log-verbosity");
+  if (verbosity) {
+    const level = String(state.settings?.logLevel ?? 0);
+    if (verbosity.value !== level) verbosity.value = level;
+  }
+  const limit = document.getElementById("event-log-limit");
+  if (limit) {
+    const keep = state.settings?.eventLogUnlimited ? "unlimited" : "limited";
+    if (limit.value !== keep) limit.value = keep;
+  }
+}
+
+document.getElementById("event-log-limit").addEventListener("change", (e) => {
+  const unlimited = e.currentTarget.value === "unlimited";
+  rpc("setEventLogUnlimited", { unlimited }).catch(showError);
+});
+
+document.getElementById("btn-bug-report").addEventListener("click", () => {
+  createBugReport().catch(showError);
+});
+
+document.getElementById("btn-download-log").addEventListener("click", () => {
+  downloadEventLog().catch(showError);
+});
+
+/** Save the event log to a file the user chooses - the same text a bug
+ *  report attaches (`renderEventLogAttachment`), written straight to disk
+ *  instead of into a message. */
+async function downloadEventLog() {
+  const url = URL.createObjectURL(
+    new Blob([await renderEventLogAttachment()], { type: "text/plain" }),
+  );
+  let id;
+  try {
+    id = await browser.downloads.download({
+      url,
+      filename: "tbsync-eventlog.txt",
+      saveAs: true,
+    });
+  } catch (err) {
+    URL.revokeObjectURL(url);
+    // Dismissing the Save-As dialog rejects; that is a choice, not a fault.
+    if (!/cancel/i.test(String(err?.message ?? err))) showError(err);
+    return;
+  }
+  // Free the blob once the write has settled, however it settled.
+  const onChanged = (delta) => {
+    if (delta.id !== id || !delta.state) return;
+    if (delta.state.current !== "in_progress") {
+      URL.revokeObjectURL(url);
+      browser.downloads.onChanged.removeListener(onChanged);
+    }
+  };
+  browser.downloads.onChanged.addListener(onChanged);
+}
+
+// Open a URL inside Thunderbird and raise the window that holds the new tab -
+// otherwise Thunderbird may create the tab in a background window and the user
+// doesn't see their click land.
+async function openThunderbirdTab(url) {
+  const tab = await messenger.tabs.create({ url, active: true });
+  if (tab?.windowId != null) {
+    await messenger.windows.update(tab.windowId, { focused: true });
+  }
+}
+
+/** Open a url where the caller asked for it.
+ *
+ *  `"browser"` hands it to the system default browser - for anything the
+ *  user should not be doing inside Thunderbird's content area, like a
+ *  payment flow. Anything else opens a Thunderbird tab, which is what an
+ *  add-on listing wants: installing works from there.
+ *
+ *  `openDefaultBrowser` is wrapped rather than returned directly because
+ *  not every version hands back a promise, and the callers want to attach
+ *  one error path to both branches. */
+function openLink(url, target) {
+  if (target === "browser") {
+    return Promise.resolve(messenger.windows.openDefaultBrowser(url));
+  }
+  return openThunderbirdTab(url);
+}
+
+// Routed external links: data-link-target="thunderbird" opens a Thunderbird
+// content tab; data-link-target="browser" opens the system default browser.
+document.body.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-link-target]");
+  if (!a) return;
+  e.preventDefault();
+  openLink(a.getAttribute("href"), a.dataset.linkTarget).catch(showError);
+});
+
+// Delegated sidebar clicks - one listener per list, independent of how many
+// times the contents are re-rendered.
+document.getElementById("account-list").addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-account-id]");
+  if (!row) return;
+  selectAccount(row.dataset.accountId);
+});
+document.getElementById("provider-list").addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-provider-id]");
+  if (!row) return;
+  const { providerId, installUrl, linkTarget } = row.dataset;
+  if (installUrl) {
+    // The row says where it wants to be opened - a fundraiser campaign
+    // goes to the default browser, an add-on listing to a Thunderbird tab.
+    openLink(installUrl, linkTarget).catch(showError);
+    return;
+  }
+  // Class drives intent: addable rows start a new setup; not-addable
+  // active rows ask the provider to focus its existing setup popup. The
+  // provider returns silently if no popup is open, so the click is a
+  // safe no-op for any state combination we didn't anticipate.
+  if (row.classList.contains("addable")) {
+    launchSetup(providerId);
+  } else {
+    rpc("focusSetupPopup", { providerId }).catch((err) =>
+      console.debug("[tbsync] manager: focusSetupPopup failed:", err),
+    );
+  }
+});
+
+// ── Account-row context menu ──────────────────────────────────────────────
+
+// Three slots, always visible: Sync, Connect↔Disconnect (toggle), Delete.
+// `onShown` only updates the sync item's enabled state and the toggle item's
+// title - no create/remove churn per right-click.
+const MENU_IDS = {
+  sync: "tbsync-account-sync",
+  toggle: "tbsync-account-toggle",
+  delete: "tbsync-account-delete",
+  eventLog: "tbsync-show-event-log",
+};
+
+{
+  const common = {
+    contexts: ["all"],
+    documentUrlPatterns: [browser.runtime.getURL("manager/manager.html")],
+  };
+  browser.menus.create({
+    ...common,
+    id: MENU_IDS.sync,
+    title: i18n("manager.account.sync", "Synchronize Now"),
+  });
+  browser.menus.create({
+    ...common,
+    id: MENU_IDS.toggle,
+    title: i18n("manager.account.connect", "Connect"),
+  });
+  browser.menus.create({
+    ...common,
+    id: MENU_IDS.delete,
+    title: i18n("manager.account.remove", "Remove"),
+  });
+  browser.menus.create({
+    ...common,
+    id: MENU_IDS.eventLog,
+    title: i18n("manager.menu.showEventLog", "Show event log"),
+  });
+}
+
+// On the accounts tab we suppress the browser default menu so our items are
+// the only ones shown - both for row clicks (account actions) and off-row
+// clicks (event-log shortcut). Other tabs fall through to the default menu.
+// `overrideContext` must be called synchronously from `contextmenu`.
+// Visibility is decided HERE, synchronously, before the menu is built.
+// The items are extension-global and their `visible` flags persist from
+// one showing to the next, so a menu must never rely on `onShown` +
+// `refresh()` to fix a stale state: by then the menu has already opened
+// from the old flags, and with `showDefaults: false` a showing where
+// everything was left hidden opens as no menu at all - the "context menu
+// works only once" bug. `menus.update` calls issued inside the
+// `contextmenu` event are applied before the menu is built; `onShown`
+// below stays as a second pass for the pieces that need the resolved
+// target (enabled states, toggle title).
+document.addEventListener("contextmenu", (event) => {
+  const inAccountsPanel = !!event.target.closest?.('[data-panel="accounts"]');
+  if (!inAccountsPanel) {
+    // Other tabs keep the default menu, without our items.
+    for (const id of Object.values(MENU_IDS)) {
+      browser.menus.update(id, { visible: false });
+    }
+    return;
+  }
+  const row = event.target.closest?.("tr[data-account-id]");
+  browser.menus.update(MENU_IDS.sync, { visible: !!row });
+  browser.menus.update(MENU_IDS.toggle, { visible: !!row });
+  browser.menus.update(MENU_IDS.delete, { visible: !!row });
+  browser.menus.update(MENU_IDS.eventLog, { visible: true });
+  browser.menus.overrideContext({ showDefaults: false });
+});
+
+browser.menus.onShown.addListener((info) => {
+  const targetEl = info.targetElementId
+    ? browser.menus.getTargetElement(info.targetElementId)
+    : null;
+  const inAccountsPanel = !!targetEl?.closest?.('[data-panel="accounts"]');
+
+  if (!inAccountsPanel) {
+    // Other tabs: keep our items out of the default menu.
+    browser.menus.update(MENU_IDS.sync, { visible: false });
+    browser.menus.update(MENU_IDS.toggle, { visible: false });
+    browser.menus.update(MENU_IDS.delete, { visible: false });
+    browser.menus.update(MENU_IDS.eventLog, { visible: false });
+    browser.menus.refresh();
+    return;
+  }
+
+  const row = targetEl.closest("tr[data-account-id]");
+  const acc =
+    row && state.accounts.find((a) => a.accountId === row.dataset.accountId);
+
+  if (!acc) {
+    // Accounts tab, off-row: the pre-open pass already reduced the menu
+    // to the event-log shortcut; nothing to correct.
+    return;
+  }
+
+  // Accounts tab, on a row: the pre-open pass made the items visible;
+  // this pass fills in what needs the resolved account - enabled states
+  // and the toggle's wording. The updates are AWAITED before refresh():
+  // update() is async, and a refresh issued while they are still in
+  // flight redraws the menu from the state they were meant to replace -
+  // the timing half of the works-only-once bug.
+  const actions = accountActions(acc);
+  Promise.all([
+    browser.menus.update(MENU_IDS.sync, {
+      enabled: actions.canSync,
+    }),
+    browser.menus.update(MENU_IDS.toggle, {
+      enabled: acc.enabled ? actions.canDisconnect : actions.canConnect,
+      title: acc.enabled
+        ? i18n("manager.account.disconnect", "Disconnect")
+        : i18n("manager.account.connect", "Connect"),
+    }),
+    browser.menus.update(MENU_IDS.delete, {
+      enabled: actions.canRemove,
+    }),
+  ])
+    .then(() => browser.menus.refresh())
+    .catch(() => {
+      // The menu can close before the updates land; nothing to repair then.
+    });
+});
+
+browser.menus.onClicked.addListener((info) => {
+  if (info.menuItemId === MENU_IDS.eventLog) {
+    selectTab("eventLog");
+    return;
+  }
+
+  const el = info.targetElementId
+    ? browser.menus
+        .getTargetElement(info.targetElementId)
+        ?.closest?.("tr[data-account-id]")
+    : null;
+  if (!el) return;
+  const accountId = el.dataset.accountId;
+  const acc = state.accounts.find((a) => a.accountId === accountId);
+  if (!acc) return;
+  const markBusy = () => {
+    state.transient.busyAccounts.add(accountId);
+    renderSidebar();
+    if (accountId === state.selectedAccountId) renderDetail();
+  };
+
+  switch (info.menuItemId) {
+    case MENU_IDS.sync:
+      rpc("syncAccount", { accountId }).catch(showError);
+      break;
+    case MENU_IDS.toggle:
+      markBusy();
+      rpc("setAccountEnabled", { accountId, enabled: !acc.enabled }).catch(
+        showError,
+      );
+      break;
+    case MENU_IDS.delete:
+      confirmAndDeleteAccount(accountId, markBusy);
+      break;
+  }
+});
+
+refreshState();
+
+// Managed storage - the configuration an administrator deployed alongside the
+// add-on. Nothing is deployed on an ordinary install, and the API rejects
+// rather than resolving empty in that case, so both outcomes leave the tab
+// hidden and only a real deployment reveals it.
+try {
+  const managed = await browser.storage.managed.get();
+  if (managed && Object.keys(managed).length) {
+    document.getElementById("managed-config").textContent = JSON.stringify(
+      managed,
+      null,
+      2,
+    );
+    const tab = document.querySelector('.tab-button[data-tab="managedConfig"]');
+    tab.hidden = false;
+  }
+} catch (err) {
+  console.debug("[tbsync] no managed storage:", err?.message ?? err);
+}
+
+// Beta-only bridge tab. `beta/modules/bridge.mjs` reaches the beta and dev
+// trees only, so on an ATN build this import throws and the tab never
+// appears - the intended behaviour there, not a failure. It builds its own
+// markup, hence handing it the subtree localizer and the RPC client that
+// manager.html's own panels get for free.
+try {
+  const bridge = await import("../modules/bridge.mjs");
+  bridge.initManagerTab({ localizeSubtree, rpc });
+} catch (err) {
+  console.debug("[tbsync] bridge tab not present:", err?.message ?? err);
+}

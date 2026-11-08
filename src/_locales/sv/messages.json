@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Centralt användargränssnitt för att hantera synkronisering av kontakter, kalendrar och uppgifter med externa konton via leverantörstillägg."
+  },
+  "manager.title": {
+    "message": "TbSync-kontohanterare"
+  },
+  "manager.tab.accounts": {
+    "message": "TbSync-konton"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Kategorihanterare"
+  },
+  "manager.categoryManager.text": {
+    "message": "TbSync synkroniserar även kontaktkategorier, vilka är ett kraftfullt alternativ till kontaktlistor som inte går att synkronisera. För att kunna använda dem i Thunderbirds adressbok kan du installera tillägget Category Manager. Det låter dig hantera överlappande kategoribaserade kontaktgrupper och erbjuder flera andra kategori-relaterade funktioner. Det finns i Mozillas officiella tilläggsregister:"
+  },
+  "manager.tab.help": {
+    "message": "Hjälp"
+  },
+  "manager.help.wiki": {
+    "message": "Öppna TbSync-projektets wiki-sidor - där finns ytterligare information, guider och utförliga konfigurationsbeskrivningar."
+  },
+  "manager.eventLog.intro": {
+    "message": "Felrapporter inkluderar innehållet i denna logg. För en mer användbar rapport: höj utförlighetsnivån, töm loggen och återskapa problemet innan du klickar på rapportknappen."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Skapa felrapport"
+  },
+  "manager.eventLog.download": {
+    "message": "Spara logg"
+  },
+  "bugReport.title": {
+    "message": "Skapa felrapport"
+  },
+  "bugReport.component": {
+    "message": "Komponent"
+  },
+  "bugReport.summary": {
+    "message": "Sammanfattning"
+  },
+  "bugReport.description": {
+    "message": "Beskrivning"
+  },
+  "bugReport.send": {
+    "message": "Skicka"
+  },
+  "bugReport.cancel": {
+    "message": "Avbryt"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Ange en sammanfattning."
+  },
+  "manager.tab.eventLog": {
+    "message": "Händelselogg"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Hanterad konfiguration"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Den här konfigurationen har distribuerats av din administratör och läses från den hanterade lagringen. Den kan inte ändras här."
+  },
+  "manager.eventLog.clear": {
+    "message": "Töm"
+  },
+  "manager.eventLog.keep": {
+    "message": "Behåll poster från den här sessionen:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Senaste 5000 posterna"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Allt"
+  },
+  "manager.eventLog.empty": {
+    "message": "Inga händelser ännu."
+  },
+  "manager.eventLog.options": {
+    "message": "Loggalternativ"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Utförlighetsnivå för händelseinsamling:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Endast fel"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Fel och varningar"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Fel, varningar och informationsmeddelanden"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Fel, varningar, informationsmeddelanden och felsökningsloggar"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Klassificering"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Nivå"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Källa"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Konto"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Resurs"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Meddelande"
+  },
+  "manager.accounts.heading": {
+    "message": "Konfigurerade konton"
+  },
+  "manager.accounts.col.status": {
+    "message": "Status"
+  },
+  "manager.providers.heading": {
+    "message": "Tillgängliga leverantörer"
+  },
+  "manager.addAccount": {
+    "message": "Lägg till konto"
+  },
+  "manager.noAccounts": {
+    "message": "Inga konton konfigurerade"
+  },
+  "manager.noProviders": {
+    "message": "Inga leverantörstillägg installerade."
+  },
+  "manager.provider.install": {
+    "message": "Installera från addons.thunderbird.net"
+  },
+  "manager.provider.installBeta": {
+    "message": "Installera betaversionen från GitHub"
+  },
+  "manager.provider.focusSetup": {
+    "message": "Hämta inställningsfönstret till förgrunden"
+  },
+  "provider.state.active": {
+    "message": "Klar"
+  },
+  "provider.state.stale": {
+    "message": "Återansluter…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Inte installerad"
+  },
+  "provider.state.incompatible": {
+    "message": "Inte kompatibel med TbSync v$HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Synkroniserar…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Inte synkroniserad"
+  },
+  "account.status.disabled": {
+    "message": "Frånkopplad"
+  },
+  "account.status.provider-unavailable": {
+    "message": "Leverantör inte tillgänglig"
+  },
+  "account.status.needs-reauth": {
+    "message": "Autentisering misslyckades"
+  },
+  "account.status.error": {
+    "message": "Fel"
+  },
+  "account.status.warning": {
+    "message": "Varning"
+  },
+  "account.status.busy": {
+    "message": "Bearbetar…"
+  },
+  "account.status.aborted": {
+    "message": "Synkronisering avbruten"
+  },
+  "folder.status.pending": {
+    "message": "Väntar på synkronisering"
+  },
+  "folder.status.modified": {
+    "message": "Lokala ändringar"
+  },
+  "error.E:AUTH": {
+    "message": "Autentisering misslyckades"
+  },
+  "syncstate.sync": {
+    "message": "Synkroniserar…"
+  },
+  "syncstate.prepare": {
+    "message": "Förbereder…"
+  },
+  "syncstate.send": {
+    "message": "Skickar förfrågan…"
+  },
+  "syncstate.eval": {
+    "message": "Bearbetar svar…"
+  },
+  "manager.detail.general": {
+    "message": "Allmänt"
+  },
+  "manager.detail.status": {
+    "message": "Status"
+  },
+  "manager.detail.provider": {
+    "message": "Leverantör:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Senaste synkronisering:"
+  },
+  "manager.resources.heading": {
+    "message": "Tillgängliga resurser"
+  },
+  "manager.resources.description": {
+    "message": "Välj vilka av de funna resurserna som ska synkroniseras med Thunderbird."
+  },
+  "manager.account.connect": {
+    "message": "Anslut"
+  },
+  "manager.account.disconnect": {
+    "message": "Koppla från"
+  },
+  "manager.account.migrate": {
+    "message": "Migrera…"
+  },
+  "manager.account.authenticate": {
+    "message": "Autentisera"
+  },
+  "manager.account.settings": {
+    "message": "Inställningar"
+  },
+  "manager.account.services": {
+    "message": "Tjänster"
+  },
+  "manager.account.remove": {
+    "message": "Ta bort"
+  },
+  "manager.account.sync": {
+    "message": "Synkronisera nu"
+  },
+  "manager.account.autosync": {
+    "message": "Synkronisera automatiskt var"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "min"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "0 inaktiverar automatisk synkronisering för detta konto."
+  },
+  "manager.error.title": {
+    "message": "Fel"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Ta bort konto"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Ta bort kontot ”$NAME$”? Alla lokala resurser för det här kontot kommer också att tas bort.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Avbryt"
+  },
+  "manager.resources.empty": {
+    "message": "Inga resurser ännu."
+  },
+  "manager.resources.col.name": {
+    "message": "Namn"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Read-only server access (server-enforced)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Read from and write to server"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Read-only server access (revert local changes)"
+  },
+  "folderType.contacts": {
+    "message": "Kontakter"
+  },
+  "folderType.calendars": {
+    "message": "Kalender"
+  },
+  "folderType.tasks": {
+    "message": "Uppgifter"
+  },
+  "account.status.needs-sync": {
+    "message": "Kontot behöver synkroniseras, minst ett objekt är osynkroniserat"
+  },
+  "account.status.upgrading": {
+    "message": "Leverantören utför ett engångsarbete på detta konto…"
+  },
+  "account.status.setting-up": {
+    "message": "Kontot förbereds…"
+  },
+  "account.status.maintaining": {
+    "message": "Leverantören kontrollerar kontots data…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Konfigurerat av en äldre version - återanslut för att synkronisera"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Skapat av en äldre version - måste migreras"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Synkroniserar…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Synkroniseringsfel"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Synkroniseringsvarning"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Lokala ändringar väntar"
+  },
+  "actionMenu.syncNow": {
+    "message": "Synkronisera nu"
+  },
+  "options.intro": {
+    "message": "TbSyncs kontoinställningar finns i TbSync-hanteraren. Klicka på knappen nedan för att öppna den."
+  },
+  "options.openManager": {
+    "message": "Öppna TbSync-hanteraren"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Visa händelseloggen"
+  },
+  "error.E:NETWORK": {
+    "message": "Det gick inte att nå servern"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Tidsgränsen överskreds"
+  },
+  "error.E:CANCELLED": {
+    "message": "Åtgärden avbröts"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "Leverantörstillägget är inte tillgängligt"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "Leverantörens protokollversion stämmer inte"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Okänt konto"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Okänd mapp"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Kommandot stöds inte"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Internt fel, se händelseloggen"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "Frånkopplad från leverantören"
+  },
+  "error.E:QUOTA": {
+    "message": "Lagringskvoten är förbrukad"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "Synkronisering misslyckades för en eller flera mappar"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "Kontot kunde inte synkroniseras"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "Servern avvisade begäran och kommer inte att acceptera ett nytt försök"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Synkroniseringsstatus"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Föräldralös] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "Besök insamlingskampanjen för den här leverantören",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Insamling",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Det här kontot skapades av en äldre version och kan inte synkronisera. Koppla från och anslut igen för att bygga upp det från servern."
+  },
+  "manager.account.migrated.held": {
+    "message": "Det här kontot skapades av en äldre version och kan inte synkronisera. $COUNT$ enbart lokala ändringar har räddats, så kontot måste migreras innan det kan användas igen.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "Servern bad om att pausa den automatiska synkroniseringen till $TIME$. Manuell synkronisering fungerar när som helst.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Migrera konto"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ ändringar i \"$ACCOUNT$\" har aldrig synkroniserats med servern och har räddats.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "Migreringen bygger upp alla kalendrar och adressböcker i kontot på nytt från servern och erbjuder sedan de räddade ändringarna så att du kan välja vilka som ska återställas."
+  },
+  "migration.button.download": {
+    "message": "Säkerhetskopiera de enbart lokala ändringarna"
+  },
+  "migration.button.start": {
+    "message": "Starta migrering"
+  },
+  "migration.button.apply": {
+    "message": "Slutför kontomigreringen"
+  },
+  "migration.button.close": {
+    "message": "Stäng"
+  },
+  "migration.column.item": {
+    "message": "Objekt"
+  },
+  "migration.column.action": {
+    "message": "Åtgärd"
+  },
+  "migration.column.type": {
+    "message": "Typ"
+  },
+  "migration.type.contact": {
+    "message": "Kontakt"
+  },
+  "migration.type.event": {
+    "message": "Händelse"
+  },
+  "migration.type.task": {
+    "message": "Uppgift"
+  },
+  "migration.type.list": {
+    "message": "Sändlista"
+  },
+  "migration.running.lead": {
+    "message": "Kontot byggs upp på nytt från servern."
+  },
+  "migration.running.replacing": {
+    "message": "Ersätter $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "Hämtar $FOLDER$…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Lägg till"
+  },
+  "migration.op.modified": {
+    "message": "Uppdatera"
+  },
+  "migration.op.deleted": {
+    "message": "Ta bort"
+  },
+  "migration.op.gone": {
+    "message": "finns inte längre på servern"
+  },
+  "migration.item.unnamed": {
+    "message": "(utan namn)"
+  },
+  "migration.detail.empty": {
+    "message": "Inget att visa."
+  },
+  "migration.replay.lead": {
+    "message": "Dina resurser har byggts upp på nytt från servern. Välj vilka av de räddade lokala ändringarna som ska återställas:"
+  },
+  "migration.replay.none": {
+    "message": "Dina resurser har byggts upp på nytt från servern. Det finns inga räddade lokala ändringar att återställa."
+  },
+  "migration.done": {
+    "message": "$COUNT$ ändringar återställdes och väntar på synkronisering. Kontot går att använda.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

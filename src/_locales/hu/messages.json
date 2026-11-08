@@ -1,0 +1,526 @@
+{
+  "extensionDescription": {
+    "message": "Központi kezelőfelület a névjegyek, naptárak és feladatok külső fiókokkal való szinkronizálásához szolgáltatói kiegészítőkön keresztül."
+  },
+  "manager.title": {
+    "message": "TbSync fiókkezelő"
+  },
+  "manager.tab.accounts": {
+    "message": "TbSync-fiókok"
+  },
+  "manager.tab.categoryManager": {
+    "message": "Kategóriakezelő"
+  },
+  "manager.categoryManager.text": {
+    "message": "A TbSync a névjegykategóriákat is szinkronizálja, amelyek a nem szinkronizálható névjegylisták erőteljes alternatíváját jelentik. Ahhoz, hogy a Thunderbird címjegyzékében használhassa őket, telepítheti a Category Manager kiegészítőt. Ez lehetővé teszi az átfedő, kategóriaalapú névjegycsoportok kezelését, és számos más kategóriához kapcsolódó funkciót kínál. A hivatalos Mozilla-kiegészítőtárban érhető el:"
+  },
+  "manager.tab.help": {
+    "message": "Súgó"
+  },
+  "manager.help.wiki": {
+    "message": "Nyissa meg a TbSync-projekt wikioldalait - itt további információk, útmutatók és részletes konfigurációs leírások találhatók."
+  },
+  "manager.eventLog.intro": {
+    "message": "A hibajelentések tartalmazzák ezen napló tartalmát. A hasznosabb jelentés érdekében emelje a részletességi szintet, törölje a naplót, és reprodukálja a hibát, mielőtt a jelentés gombra kattint."
+  },
+  "manager.eventLog.bugReport.button": {
+    "message": "Hibajelentés készítése"
+  },
+  "manager.eventLog.download": {
+    "message": "Napló mentése"
+  },
+  "bugReport.title": {
+    "message": "Hibajelentés készítése"
+  },
+  "bugReport.component": {
+    "message": "Komponens"
+  },
+  "bugReport.summary": {
+    "message": "Összefoglaló"
+  },
+  "bugReport.description": {
+    "message": "Leírás"
+  },
+  "bugReport.send": {
+    "message": "Küldés"
+  },
+  "bugReport.cancel": {
+    "message": "Mégse"
+  },
+  "bugReport.error.summaryRequired": {
+    "message": "Adja meg az összefoglalót."
+  },
+  "manager.tab.eventLog": {
+    "message": "Eseménynapló"
+  },
+  "manager.tab.managedConfig": {
+    "message": "Felügyelt konfiguráció"
+  },
+  "manager.managedConfig.intro": {
+    "message": "Ezt a konfigurációt a rendszergazda telepítette, és a felügyelt tárolóból származik. Itt nem módosítható."
+  },
+  "manager.eventLog.clear": {
+    "message": "Törlés"
+  },
+  "manager.eventLog.keep": {
+    "message": "A munkamenet bejegyzéseinek megőrzése:"
+  },
+  "manager.eventLog.keep.limited": {
+    "message": "Utolsó 5000 bejegyzés"
+  },
+  "manager.eventLog.keep.unlimited": {
+    "message": "Mindent"
+  },
+  "manager.eventLog.empty": {
+    "message": "Még nincs esemény."
+  },
+  "manager.eventLog.options": {
+    "message": "Naplóbeállítások"
+  },
+  "manager.eventLog.verbosity": {
+    "message": "Eseménygyűjtés részletességi szintje:"
+  },
+  "manager.eventLog.verbosity.errors": {
+    "message": "Csak hibák"
+  },
+  "manager.eventLog.verbosity.warnings": {
+    "message": "Hibák és figyelmeztetések"
+  },
+  "manager.eventLog.verbosity.info": {
+    "message": "Hibák, figyelmeztetések és tájékoztató üzenetek"
+  },
+  "manager.eventLog.verbosity.debug": {
+    "message": "Hibák, figyelmeztetések, tájékoztató üzenetek és hibakeresési naplók"
+  },
+  "manager.eventLog.col.classification": {
+    "message": "Besorolás"
+  },
+  "manager.eventLog.field.level": {
+    "message": "Szint"
+  },
+  "manager.eventLog.field.reporter": {
+    "message": "Forrás"
+  },
+  "manager.eventLog.field.account": {
+    "message": "Fiók"
+  },
+  "manager.eventLog.field.resource": {
+    "message": "Erőforrás"
+  },
+  "manager.eventLog.col.message": {
+    "message": "Üzenet"
+  },
+  "manager.accounts.heading": {
+    "message": "Beállított fiókok"
+  },
+  "manager.accounts.col.status": {
+    "message": "Állapot"
+  },
+  "manager.providers.heading": {
+    "message": "Elérhető szolgáltatók"
+  },
+  "manager.addAccount": {
+    "message": "Fiók hozzáadása"
+  },
+  "manager.noAccounts": {
+    "message": "Nincs beállított fiók"
+  },
+  "manager.noProviders": {
+    "message": "Nincs telepítve szolgáltatói kiegészítő."
+  },
+  "manager.provider.install": {
+    "message": "Telepítés az addons.thunderbird.net oldalról"
+  },
+  "manager.provider.installBeta": {
+    "message": "A béta telepítése a GitHubról"
+  },
+  "manager.provider.focusSetup": {
+    "message": "A beállítási ablak előtérbe hozása"
+  },
+  "provider.state.active": {
+    "message": "Kész"
+  },
+  "provider.state.stale": {
+    "message": "Újracsatlakozás…"
+  },
+  "provider.state.uninstalled": {
+    "message": "Nincs telepítve"
+  },
+  "provider.state.incompatible": {
+    "message": "Nem kompatibilis a TbSync v$HOST$ verzióval",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "account.status.success": {
+    "message": "OK"
+  },
+  "account.status.syncing": {
+    "message": "Szinkronizálás…"
+  },
+  "account.status.notsyncronized": {
+    "message": "Nincs szinkronizálva"
+  },
+  "account.status.disabled": {
+    "message": "Lecsatlakoztatva"
+  },
+  "account.status.provider-unavailable": {
+    "message": "A szolgáltató nem elérhető"
+  },
+  "account.status.needs-reauth": {
+    "message": "A hitelesítés sikertelen"
+  },
+  "account.status.error": {
+    "message": "Hiba"
+  },
+  "account.status.warning": {
+    "message": "Figyelmeztetés"
+  },
+  "account.status.busy": {
+    "message": "Feldolgozás…"
+  },
+  "account.status.aborted": {
+    "message": "Szinkronizálás megszakítva"
+  },
+  "folder.status.pending": {
+    "message": "Szinkronizálásra várva"
+  },
+  "folder.status.modified": {
+    "message": "Helyi módosítások"
+  },
+  "error.E:AUTH": {
+    "message": "A hitelesítés sikertelen"
+  },
+  "syncstate.sync": {
+    "message": "Szinkronizálás…"
+  },
+  "syncstate.prepare": {
+    "message": "Előkészítés…"
+  },
+  "syncstate.send": {
+    "message": "Kérés küldése…"
+  },
+  "syncstate.eval": {
+    "message": "Válasz feldolgozása…"
+  },
+  "manager.detail.general": {
+    "message": "Általános"
+  },
+  "manager.detail.status": {
+    "message": "Állapot"
+  },
+  "manager.detail.provider": {
+    "message": "Szolgáltató:"
+  },
+  "manager.detail.lastSync": {
+    "message": "Utolsó szinkronizálás:"
+  },
+  "manager.resources.heading": {
+    "message": "Elérhető erőforrások"
+  },
+  "manager.resources.description": {
+    "message": "Válassza ki, hogy a megtalált erőforrások közül melyeket szinkronizálja a Thunderbird."
+  },
+  "manager.account.connect": {
+    "message": "Csatlakozás"
+  },
+  "manager.account.disconnect": {
+    "message": "Lecsatlakozás"
+  },
+  "manager.account.migrate": {
+    "message": "Migrálás…"
+  },
+  "manager.account.authenticate": {
+    "message": "Hitelesítés"
+  },
+  "manager.account.settings": {
+    "message": "Beállítások"
+  },
+  "manager.account.services": {
+    "message": "Szolgáltatások"
+  },
+  "manager.account.remove": {
+    "message": "Eltávolítás"
+  },
+  "manager.account.sync": {
+    "message": "Szinkronizálás most"
+  },
+  "manager.account.autosync": {
+    "message": "Automatikus szinkronizálás minden"
+  },
+  "manager.account.autosync.minutes": {
+    "message": "perc"
+  },
+  "manager.account.autosync.tooltip": {
+    "message": "A 0 letiltja az automatikus szinkronizálást ennél a fióknál."
+  },
+  "manager.error.title": {
+    "message": "Hiba"
+  },
+  "manager.error.dismiss": {
+    "message": "OK"
+  },
+  "manager.remove.confirmTitle": {
+    "message": "Fiók eltávolítása"
+  },
+  "manager.remove.confirmBody": {
+    "message": "Eltávolítja a(z) „$NAME$” fiókot? A fiók összes helyi erőforrása is törlődik.",
+    "placeholders": {
+      "NAME": {
+        "content": "$1",
+        "example": "john@gmail.com"
+      }
+    }
+  },
+  "manager.remove.cancelLabel": {
+    "message": "Mégse"
+  },
+  "manager.resources.empty": {
+    "message": "Még nincs erőforrás."
+  },
+  "manager.resources.col.name": {
+    "message": "Név"
+  },
+  "folder.acl.serverReadOnly": {
+    "message": "Csak olvasható hozzáférés (kiszolgáló által kényszerítve)"
+  },
+  "folder.acl.option.readWrite": {
+    "message": "Olvasás és írás a kiszolgálón"
+  },
+  "folder.acl.option.downloadOnly": {
+    "message": "Csak olvasható hozzáférés (helyi változások visszavonása)"
+  },
+  "folderType.contacts": {
+    "message": "Névjegyek"
+  },
+  "folderType.calendars": {
+    "message": "Naptár"
+  },
+  "folderType.tasks": {
+    "message": "Feladatok"
+  },
+  "account.status.needs-sync": {
+    "message": "A fiókot szinkronizálni kell, legalább egy elem nincs szinkronban"
+  },
+  "account.status.upgrading": {
+    "message": "A szolgáltató egyszeri műveletet hajt végre ezen a fiókon…"
+  },
+  "account.status.setting-up": {
+    "message": "A fiók előkészítése folyamatban…"
+  },
+  "account.status.maintaining": {
+    "message": "A szolgáltató ellenőrzi a fiók adatait…"
+  },
+  "account.status.legacy-locked": {
+    "message": "Egy korábbi verzió állította be - a szinkronizáláshoz csatlakoztassa újra"
+  },
+  "account.status.legacy-migrate": {
+    "message": "Régebbi verzió állította be - migrálni kell"
+  },
+  "actionButton.title.ok": {
+    "message": "TbSync"
+  },
+  "actionButton.title.syncing": {
+    "message": "TbSync - Szinkronizálás…"
+  },
+  "actionButton.title.error": {
+    "message": "TbSync - Szinkronizálási hiba"
+  },
+  "actionButton.title.warning": {
+    "message": "TbSync - Szinkronizálási figyelmeztetés"
+  },
+  "actionButton.title.localChanges": {
+    "message": "TbSync - Függő helyi változások"
+  },
+  "actionMenu.syncNow": {
+    "message": "Szinkronizálás most"
+  },
+  "options.intro": {
+    "message": "A TbSync fiókbeállításai a TbSync kezelőben találhatók. Kattintson az alábbi gombra a megnyitásához."
+  },
+  "options.openManager": {
+    "message": "TbSync kezelő megnyitása"
+  },
+  "manager.menu.showEventLog": {
+    "message": "Eseménynapló megjelenítése"
+  },
+  "error.E:NETWORK": {
+    "message": "Nem sikerült elérni a szervert"
+  },
+  "error.E:TIMEOUT": {
+    "message": "Időtúllépés"
+  },
+  "error.E:CANCELLED": {
+    "message": "A művelet megszakítva"
+  },
+  "error.E:PROVIDER_UNAVAILABLE": {
+    "message": "A szolgáltató bővítmény nem érhető el"
+  },
+  "error.E:PROTOCOL_VERSION": {
+    "message": "A szolgáltató protokollverziója nem egyezik"
+  },
+  "error.E:UNKNOWN_ACCOUNT": {
+    "message": "Ismeretlen fiók"
+  },
+  "error.E:UNKNOWN_FOLDER": {
+    "message": "Ismeretlen mappa"
+  },
+  "error.E:UNKNOWN_COMMAND": {
+    "message": "Nem támogatott parancs"
+  },
+  "error.E:PROVIDER_FAULT": {
+    "message": "Belső hiba, lásd az eseménynaplót"
+  },
+  "error.E:PORT_CLOSED": {
+    "message": "A szolgáltatóval való kapcsolat megszakadt"
+  },
+  "error.E:QUOTA": {
+    "message": "A tárhelykvóta elérve"
+  },
+  "error.E:FOLDER_SYNC_FAILED": {
+    "message": "A szinkronizálás sikertelen egy vagy több mappa esetében"
+  },
+  "error.E:ACCOUNT_SYNC_FAILED": {
+    "message": "A fiókot nem sikerült szinkronizálni"
+  },
+  "error.E:NOT_TEMPORARY": {
+    "message": "A kiszolgáló elutasította a kérést, és újrapróbálkozásra sem fogadja el"
+  },
+  "manager.resources.col.syncStatus": {
+    "message": "Szinkronizálási állapot"
+  },
+  "orphanedResourcePrefix": {
+    "message": "[Árva] ",
+    "description": "Prefix put in front of a calendar or address book that no account syncs any more, so it is recognisable in Thunderbird's lists. Keep the trailing space."
+  },
+  "manager.provider.fundraiser": {
+    "message": "A szolgáltatóhoz tartozó adománygyűjtő kampány megtekintése",
+    "description": "Hover text on the provider row for a provider that does not exist yet and is being crowdfunded. Clicking opens the campaign page."
+  },
+  "provider.state.fundraiser": {
+    "message": "Adománygyűjtés",
+    "description": "Sub-label under such a provider's name, where an installed one reads 'Ready' and an absent one 'Not installed'."
+  },
+  "manager.account.migrated": {
+    "message": "Ezt a fiókot egy régebbi verzió állította be, ezért nem tud szinkronizálni. Bontsa a kapcsolatot, majd csatlakoztassa újra, hogy a kiszolgálóról épüljön fel."
+  },
+  "manager.account.migrated.held": {
+    "message": "Ezt a fiókot egy régebbi verzió állította be, ezért nem tud szinkronizálni. $COUNT$ csak helyben meglévő módosítás megmenekült - a fiókot migrálni kell, mielőtt újra használható lenne.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "manager.account.autosyncPaused": {
+    "message": "A kiszolgáló kérte az automatikus szinkronizálás szüneteltetését eddig: $TIME$. A kézi szinkronizálás bármikor működik.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.title": {
+    "message": "Fiók migrálása"
+  },
+  "migration.intro.lead": {
+    "message": "$COUNT$ módosítás a(z) „$ACCOUNT$” fiókon soha nem lett szinkronizálva a kiszolgálóval, ezért megmenekült.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "account": {
+        "content": "$2"
+      }
+    }
+  },
+  "migration.intro.what": {
+    "message": "A migrálás a fiók összes naptárát és címjegyzékét újraépíti a kiszolgálóról, majd felkínálja a megmentett módosításokat, hogy kiválaszthassa, melyeket állítsuk helyre."
+  },
+  "migration.button.download": {
+    "message": "A csak helyben meglévő módosítások mentése"
+  },
+  "migration.button.start": {
+    "message": "Migrálás indítása"
+  },
+  "migration.button.apply": {
+    "message": "Fiókmigrálás befejezése"
+  },
+  "migration.button.close": {
+    "message": "Bezárás"
+  },
+  "migration.column.item": {
+    "message": "Elem"
+  },
+  "migration.column.action": {
+    "message": "Művelet"
+  },
+  "migration.column.type": {
+    "message": "Típus"
+  },
+  "migration.type.contact": {
+    "message": "Névjegy"
+  },
+  "migration.type.event": {
+    "message": "Esemény"
+  },
+  "migration.type.task": {
+    "message": "Feladat"
+  },
+  "migration.type.list": {
+    "message": "Levelezőlista"
+  },
+  "migration.running.lead": {
+    "message": "A fiók újraépítése a kiszolgálóról."
+  },
+  "migration.running.replacing": {
+    "message": "$FOLDER$ cseréje…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.running.syncing": {
+    "message": "$FOLDER$ letöltése…",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "migration.op.added": {
+    "message": "Hozzáadás"
+  },
+  "migration.op.modified": {
+    "message": "Frissítés"
+  },
+  "migration.op.deleted": {
+    "message": "Törlés"
+  },
+  "migration.op.gone": {
+    "message": "már nincs a kiszolgálón"
+  },
+  "migration.item.unnamed": {
+    "message": "(névtelen)"
+  },
+  "migration.detail.empty": {
+    "message": "Nincs megjeleníthető."
+  },
+  "migration.replay.lead": {
+    "message": "Az erőforrások újraépültek a kiszolgálóról. Válassza ki, mely megmentett helyi módosítások kerüljenek vissza:"
+  },
+  "migration.replay.none": {
+    "message": "Az erőforrások újraépültek a kiszolgálóról. Nincs visszaállítandó megmentett helyi módosítás."
+  },
+  "migration.done": {
+    "message": "$COUNT$ módosítás helyreállt, és szinkronizálásra vár. A fiók használatra kész.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  }
+}

@@ -1,0 +1,810 @@
+/* The manager window's layout. Its colours and controls are in
+ * `../shared.css`, which the page links first - see the note there. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-page);
+}
+
+/* Whole page scrolls; no internal scroll containers. Width capped at 900px
+   so the manager reads as a centred column on wider tabs. */
+body {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 24px;
+  gap: 28px;
+  max-width: 1000px;
+  min-width: 700px;
+  margin: 0 auto;
+}
+
+/* Tab bar: dark outer border, tabs lighter than the panel. Icon centered
+   above the label; equal width. */
+.tab-bar {
+  display: flex;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  padding: 0;
+}
+/* A tab whose feature is not present. Needs the attribute selector: the
+   rule below sets a display, which would otherwise win over [hidden]. */
+.tab-button[hidden] { display: none; }
+.tab-button {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 24px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: center;
+  white-space: nowrap;
+}
+.tab-button:not(.active):not(:disabled):hover { background: var(--tab-hover); }
+.tab-button.active,
+.tab-button.active:hover { background: var(--tab-active); }
+.tab-button img,
+.tab-button .icon-placeholder {
+  width: 32px;
+  height: 32px;
+}
+
+/* Only the active panel is visible. Panels size to content; the whole page
+   scrolls. */
+.tab-panel[hidden] { display: none; }
+.tab-panel { display: flex; flex-direction: column; gap: 12px; }
+.panel-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.tab-panel > p,
+.tab-panel > h3 { line-height: 1.5; }
+.tab-panel > p  { margin: 0 0 10px; }
+.tab-panel > h3 { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
+.tab-panel > :first-child { margin-top: 8px; }
+.tab-panel .link-row { padding-left: 1em; }
+.tab-panel a { color: var(--accent); cursor: pointer; }
+.tab-panel a:hover { text-decoration: underline; }
+
+.layout { display: flex; gap: 20px; align-items: flex-start; }
+
+.sidebar {
+  width: 260px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Sidebar tables - shared chrome for the accounts + providers lists.
+   Three columns: provider icon, name/title, trailing icon. */
+.sidebar-list-wrap {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+/* Only the accounts list reserves vertical space so the "No accounts
+   configured" empty state has presence; the provider list sizes to content. */
+.sidebar-list-wrap:has(> #account-list) {
+  min-height: 125px;
+}
+.sidebar-list {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.sidebar-list thead th {
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.sidebar-list th.col-status,
+.sidebar-list td.col-status { text-align: right; }
+.sidebar-list th.col-provider-icon,
+.sidebar-list td.col-provider-icon { width: 24px; padding-right: 0; }
+.sidebar-list td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-row);
+  cursor: pointer;
+}
+.sidebar-list tbody tr:last-child td { border-bottom: none; }
+.sidebar-list tbody tr:hover td { background: var(--row-hover); }
+.sidebar-list tbody tr.selected td { background: var(--row-selected); }
+.sidebar-list tbody tr.disabled td.col-account-name { color: var(--text-disabled); font-style: italic; }
+.sidebar-list td.col-provider-icon img {
+  width: 16px;
+  height: 16px;
+  image-rendering: crisp-edges;
+  display: block;
+}
+.sidebar-list tr.empty td {
+  color: var(--text-muted);
+  font-style: italic;
+  cursor: default;
+  text-align: center;
+  padding: 12px 8px;
+}
+.sidebar-list tr.empty:hover td { background: transparent; }
+
+/* Provider list specifics: secondary line under the provider name, and
+   non-addable rows (uninstalled / setup already in flight) dim the plus
+   icon and stop acting like a button. */
+.provider-list tr.addable { cursor: pointer; }
+.provider-list tr.installable { cursor: pointer; }
+.provider-list tr.installable:hover td { background: var(--row-hover); }
+/* A fundraiser row clicks through to the campaign, so it behaves like an
+   installable one - it just does not offer an install. */
+.provider-list tr.fundraiser { cursor: pointer; }
+.provider-list tr.fundraiser:hover td { background: var(--row-hover); }
+.provider-list tr.fundraiser td.col-account-name .name { font-style: italic; }
+.provider-list tr.not-addable td { cursor: default; }
+.provider-list tr.not-addable:hover td { background: transparent; }
+.provider-list tr.not-addable .add-account-icon { opacity: .3; }
+/* Active providers in not-addable state mean "setup in flight". The row
+   stays dimmed, but the click brings the existing popup to the front. */
+.provider-list tr.not-addable.active td { cursor: pointer; }
+.provider-list tr.not-addable.active:hover td { background: var(--row-hover); }
+.provider-list tr.uninstalled td.col-account-name .name { color: var(--text-disabled); font-style: italic; }
+.provider-list .sub { font-size: 11px; color: var(--text-tertiary); }
+.provider-list .add-account-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: crisp-edges;
+  vertical-align: middle;
+}
+.provider-list .provider-install-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-alt);
+  vertical-align: middle;
+}
+.provider-list .provider-fundraise-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--fundraise);
+  vertical-align: middle;
+}
+
+/* Status-column icon - legacy TbSync's 16px pixmaps (tick, warning, etc.).
+   Tooltip on the element carries the localised label for hover + screen
+   readers. */
+.status-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: crisp-edges;
+  vertical-align: middle;
+  display: inline-block;
+}
+/* Legacy TbSync cycled through 4 PNG frames driven by status-update traffic.
+   We use one frame + a CSS rotation - same visual, no state-update dependency. */
+.status-icon.syncing {
+  animation: tbsync-rotate 1.2s linear infinite;
+}
+@keyframes tbsync-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+}
+
+.placeholder { color: var(--text-muted); font-style: italic; }
+
+.detail-section {
+  margin-bottom: 48px;
+}
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+/* All section headers (General / Status / Available Resources) - small
+   uppercase tag matching the sidebar list headings. */
+.detail-section > h2 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Content inside each section is indented under the header. Use margin
+   (not padding) so bordered children - like the resources table wrapper -
+   are shifted right wholesale, border included. */
+.detail-section > *:not(h2) {
+  margin-left: 12px;
+}
+
+.status-text { font-size: 13px; }
+.status-text.error   { color: var(--status-error); }
+.status-text.warning { color: var(--status-warning); }
+
+/* Secondary to the status it sits under: this is a standing caveat about
+   where the account came from, not a report of what it is doing now. */
+.status-note {
+  margin-top: 4px;
+  max-width: 60ch;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.card-description { margin: 0 0 10px; color: var(--text-secondary); font-size: 12px; }
+
+.detail-row {
+  display: flex;
+  gap: 2em;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.detail-row label { color: var(--text-secondary); }
+
+/* General section: info on the left, action buttons aligned to the right
+   edge and vertically centered against the stacked info rows. */
+.detail-general {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+/* Two-column grid so the values under "Provider:" / "Last sync:" align
+   vertically regardless of label width. `display: contents` on each row
+   flattens the label/value pair into the grid. */
+.detail-general-info {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 2em;
+  row-gap: 6px;
+  align-items: center;
+}
+.detail-general-info .detail-row {
+  display: contents;
+}
+.detail-general-actions,
+.detail-status-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Status section: text on the left, primary action button stacked on
+   the right edge - mirrors the General section's two-cell layout. */
+.detail-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.detail-status-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Resources table - same card chrome as the sidebar accounts/providers
+   lists (outer border + radius + header strip), but without their
+   row-level interactions (clickable rows, hover background). */
+.folder-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+.folder-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.folder-table thead th {
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.folder-table td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-row);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+/* Each folder occupies its own <tbody class="folder-group"> with a
+   main row (always, the resource-name row), an optional sync-progress
+   row (only while the account is syncing), and an optional message
+   row (only when a warning/error has free-text content). Internal
+   borders between rows of one folder are suppressed so the rows read
+   as a single visual unit; the inter-folder separator is the bottom
+   border of each tbody's last row. */
+.folder-table tbody.folder-group > tr:not(:last-child) > td {
+  border-bottom: none;
+}
+.folder-table tr.folder-sync > td {
+  border-top: none;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.folder-table tr.folder-sync > td.col-sync-status {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.folder-table tr.folder-message > td {
+  border-top: none;
+  vertical-align: top;
+  padding-top: 0;
+  padding-bottom: 8px;
+}
+.folder-table tr.folder-message > td.col-message {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+}
+.folder-table tbody.folder-group:last-child > tr:last-child > td {
+  border-bottom: none;
+}
+.folder-table tbody.folder-group:hover > tr > td {
+  background: var(--row-hover);
+}
+
+/* Keep the helper columns as narrow as possible; status absorbs the rest. */
+.folder-table col.col-check       { width: 28px; }
+.folder-table col.col-type-icon   { width: 20px; }
+.folder-table col.col-acl         { width: 60px; }
+.folder-table col.col-name        { width: 1%; white-space: nowrap; }
+.folder-table col.col-status-icon { width: 20px; }
+.folder-table col.col-status      { width: 100%; }
+
+.folder-table td.col-check,
+.folder-table td.col-type-icon,
+.folder-table td.col-status-icon { padding-right: 0; }
+/* Reserve a 16x16 box in empty status-icon cells so the column width
+   stays identical whether or not an icon is rendered: empty cells get
+   the placeholder, cells with an icon don't. Without this, an empty
+   cell collapses to padding-only and the column wobbles between
+   renders. */
+.folder-table td.col-status-icon:empty::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+.folder-table td.col-acl { padding-right: 6px; }
+/* Align the three leading cells on the same y: strip UA margin off the
+   checkbox and size it to the 16px icons next to it. */
+.folder-table td.col-check input[type="checkbox"] {
+  display: block;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+.folder-table td.col-name { white-space: nowrap; }
+
+/* Main-row status carries single-line content (resource name or short
+   label); long error/warning text lives on the message row. Truncate
+   with ellipsis so a runaway provider label can't push the column
+   wider than its allotted share. `max-width: 0` is the table-cell
+   idiom that lets the colgroup width drive the cell instead of the
+   text content. */
+.folder-table tr.folder-main > td.col-status {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.folder-table tbody.folder-group.unselected > tr > td.col-name,
+.folder-table tbody.folder-group.unselected > tr > td.col-status,
+.folder-table tbody.folder-group.unselected > tr > td.col-sync-status,
+.folder-table tbody.folder-group.unselected > tr > td.col-message {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.folder-type-icon,
+.folder-acl-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* Per-folder ACL chooser. Closed state is a compact icon+chevron button
+   (or a static icon when the server enforces read-only). The popup is a
+   custom <ul role="listbox"> with two icon+text rows. */
+
+/* Static icon shown when the server enforces read-only - no menu. */
+.folder-acl-icon-static {
+  cursor: default;
+}
+
+/* Wrapper sets up a positioning context for the absolute popup. */
+.folder-acl-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.folder-acl-trigger {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  /* Visible 1px border always - the trigger reads as a control even at
+     rest. Hover/open deepen the border and tint the fill. */
+  border: 1px solid var(--border-row);
+  border-radius: 3px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 22px;
+  box-sizing: border-box;
+}
+.folder-acl-trigger:hover:not(:disabled),
+.folder-acl-trigger[aria-expanded="true"] {
+  border-color: var(--text-secondary);
+  background-color: var(--row-hover);
+}
+.folder-acl-trigger:hover:not(:disabled) .folder-acl-trigger-sep,
+.folder-acl-trigger[aria-expanded="true"] .folder-acl-trigger-sep {
+  background-color: var(--text-secondary);
+}
+.folder-acl-trigger:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 1px;
+}
+.folder-acl-trigger:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.folder-acl-trigger-icon {
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0 4px;
+  flex-shrink: 0;
+  image-rendering: crisp-edges;
+}
+.folder-acl-trigger-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 0;
+  background-color: var(--border-row);
+  flex-shrink: 0;
+}
+.folder-acl-trigger-chevron {
+  width: 8px;
+  height: 5px;
+  margin: 0 5px;
+  fill: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Popup is positioned at viewport coordinates computed at open-time from
+   the trigger's bounding rect. `position: fixed` escapes the table's
+   overflow clipping so rows near the bottom of the list still render the
+   full menu. Width is content-driven so the legacy long-form labels stay
+   on one line. */
+.folder-acl-popup {
+  position: fixed;
+  z-index: 10000;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-row);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px var(--dialog-shadow);
+  min-width: max-content;
+  white-space: nowrap;
+}
+.folder-acl-popup[hidden] {
+  display: none;
+}
+.folder-acl-popup li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.folder-acl-popup li:hover,
+.folder-acl-popup li:focus-visible {
+  background-color: var(--row-hover);
+}
+.folder-acl-popup li.selected {
+  font-weight: 600;
+}
+.folder-acl-option-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  image-rendering: crisp-edges;
+}
+
+/* Folder-row inline message - coloured text shown in the Status cell when
+   folder.error / folder.warning is set. No background. */
+.folder-message {
+  font-size: 12px;
+}
+.folder-message.error   { color: var(--status-error); }
+.folder-message.warning { color: var(--status-warning); }
+.folder-message.aborted { color: var(--status-warning); }
+.folder-message.info    { color: var(--text-secondary); }
+
+.resources-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.resources-footer .autosync-label { color: var(--text-secondary); }
+.resources-footer #autosync-minutes {
+  width: 48px;
+  padding: 4px 6px;
+  border: 1px solid var(--border-input);
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: right;
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+.resources-footer #autosync-minutes:disabled { background: var(--bg-input-disabled); color: var(--text-muted); }
+.resources-footer .autosync-unit { color: var(--text-secondary); margin-right: 10px; }
+
+
+.btn-ghost {
+  background: var(--bg-card);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 5px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-ghost:not(:disabled):hover { background: var(--accent-soft); }
+
+/* Event log (inside the event-log tab). Grows to content; page scrolls. */
+.event-log {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.event-log-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+}
+.event-log-header .actions { display: flex; align-items: center; gap: 12px; }
+.event-log-header label { font-size: 12px; color: var(--text-secondary); }
+#event-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+#event-log-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+#event-log-table tbody td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border-row);
+  vertical-align: top;
+}
+/* Classification: every field of the entry except its message, stacked.
+   Nothing here may wrap - an id broken across lines cannot be read back,
+   which is the whole point of showing it. The column therefore sizes to
+   its longest line; `width: 1%` keeps the table's auto layout from giving
+   it any of the slack, so all of it goes to the message. */
+#event-log-table th.ctx, #event-log-table td.ctx {
+  width: 1%;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+#event-log-table td.ctx .time { color: var(--text-tertiary); }
+#event-log-table tr.error   td.ctx .sev { color: var(--status-error); font-weight: 600; }
+#event-log-table tr.warning td.ctx .sev { color: var(--status-warning); font-weight: 600; }
+#event-log-table tr.debug   td.ctx .sev { color: var(--text-muted); }
+#event-log-table .details {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  margin-top: 2px;
+}
+.event-log-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  display: none;
+}
+.event-log-empty.visible { display: block; }
+
+/* Confirmation dialog backing the destructive-action prompt. */
+.confirm-dialog {
+  border: 1px solid var(--border-dialog);
+  border-radius: 8px;
+  padding: 0;
+  width: 360px;
+  max-width: 90vw;
+  box-shadow: 0 10px 30px var(--dialog-shadow);
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+.confirm-dialog::backdrop { background: var(--dialog-backdrop); }
+.confirm-dialog form { margin: 0; }
+.confirm-dialog h3 {
+  margin: 0;
+  padding: 16px 20px 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.confirm-dialog p {
+  margin: 0;
+  padding: 0 20px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-body-soft);
+}
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  border-radius: 0 0 8px 8px;
+}
+
+/* Variant-driven button visibility - error popovers show only the OK button,
+   confirm popovers hide it. */
+/* Variant-driven button visibility - each variant hides the buttons it
+   doesn't use. Confirm: cancel+confirm; Error: ok; Bug report: cancel+send. */
+.confirm-dialog[data-variant="confirm"] #confirm-dialog-ok,
+.confirm-dialog[data-variant="confirm"] #confirm-dialog-send { display: none; }
+.confirm-dialog[data-variant="error"] #confirm-dialog-cancel,
+.confirm-dialog[data-variant="error"] #confirm-dialog-confirm,
+.confirm-dialog[data-variant="error"] #confirm-dialog-send { display: none; }
+.confirm-dialog[data-variant="bugreport"] #confirm-dialog-ok,
+.confirm-dialog[data-variant="bugreport"] #confirm-dialog-confirm { display: none; }
+
+/* Bug-report fields are only visible in the bug-report variant. The plain
+   `<p>` body slot above them is hidden in that variant. */
+.confirm-dialog .bug-report-fields { display: none; padding: 0 20px 8px; }
+.confirm-dialog[data-variant="bugreport"] .bug-report-fields { display: block; }
+.confirm-dialog[data-variant="bugreport"] #confirm-dialog-body { display: none; }
+.confirm-dialog[data-variant="bugreport"] { width: 460px; }
+.bug-report-fields .form-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.bug-report-fields label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-secondary);
+}
+.bug-report-fields select,
+.bug-report-fields input[type="text"],
+.bug-report-fields textarea {
+  padding: 5px 8px;
+  border: 1px solid var(--border-input);
+  border-radius: 4px;
+  font: inherit;
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+.bug-report-fields textarea { resize: vertical; }
+
+/* Event log tab - the settings that shape the log, below the log itself.
+   Same card chrome and header strip as the log above it and the sidebar
+   lists; label and control per row, labels on a fixed column so the two
+   selects line up. */
+.event-log-options {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.event-log-options > header {
+  padding: 6px 12px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+/* Two content-sized columns so the selects line up under each other
+   whatever length the labels are - one of them is a full sentence. The
+   rows are `display: contents` so each label's span and select become
+   items of this grid rather than of the row. */
+.event-log-options-body {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 10px 12px;
+  align-items: center;
+  padding: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.event-log-options .option-row { display: contents; }
+.event-log-options select {
+  padding: 3px 6px;
+  border: 1px solid var(--border-input);
+  border-radius: 4px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.code-block {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-primary);
+  white-space: pre;
+}
